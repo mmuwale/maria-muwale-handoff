@@ -1,0 +1,21 @@
+{
+  "name": "maria-muwale-site",
+  "version": "6.0.0",
+  "private": true,
+  "description": "Maria Muwale campaign site - for Female Academic Representative, Strathmore University. No build step; site/ is the deploy folder.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "setup": "playwright install chromium",
+    "test": "node tests/resting.mjs --label=latest",
+    "test:label": "node tests/resting.mjs --label=after-merge",
+    "serve": "node tests/resting.mjs --serve",
+    "serve:lan": "node tests/resting.mjs --serve --host=0.0.0.0 --port=8080",
+    "og": "node tools/make-og.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
+  }
+}
