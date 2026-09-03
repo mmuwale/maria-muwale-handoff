@@ -10,14 +10,14 @@ export function IntroSection() {
           {intro.eyebrow}
         </div>
         <div className="mx-auto my-5 h-[3px] w-[70px] bg-[#c7a45a]" />
-        <h2 className={`${playfair.className} text-[clamp(38px,5vw,68px)] leading-[1.1]`}>
+        <h2 className={`${playfair.className} reveal-group text-[clamp(38px,5vw,68px)] leading-[1.1]`}>
           {intro.heading.map((line) => (
-            <span key={line} className="block">
+            <span key={line} className="reveal-wipe block">
               {line}
             </span>
           ))}
         </h2>
-        <p className="mt-5 text-xl leading-[1.7] text-[#e8edf4]">{intro.body}</p>
+        <p className="reveal-up mt-5 text-xl leading-[1.7] text-[#e8edf4]">{intro.body}</p>
       </div>
     </section>
   );
