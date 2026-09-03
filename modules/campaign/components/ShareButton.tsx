@@ -21,7 +21,7 @@ export function ShareButton({ label }: { label: string }) {
     <button
       type="button"
       onClick={handleShare}
-      className="inline-flex items-center justify-center rounded-full border border-gold px-5 py-3.5 text-sm font-bold tracking-tight text-gold transition-colors hover:bg-gold/10"
+      className="w-full border-2 border-gold px-3.5 py-3.5 text-center text-xs font-semibold uppercase tracking-[0.14em] text-gold transition-colors hover:bg-gold/10 min-[900px]:px-4 min-[900px]:py-4 min-[900px]:text-[13px]"
     >
       {label}
     </button>

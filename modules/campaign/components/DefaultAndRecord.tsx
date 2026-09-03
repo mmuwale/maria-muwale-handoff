@@ -13,6 +13,13 @@ const SHOW_THRESHOLD = 0.55;
  * section 2's "single most surprising thing about the structure"). The band
  * is a layer inside the stage that creeps up from below and buries beat 2 as
  * scroll progress crosses roughly the midpoint of the 300vh scene.
+ *
+ * Sizing/breakpoints below are ported from the handoff build's
+ * site/index.html (.default/.dContent/.boxes/.box/.bl-inner, base rules plus
+ * the min-width:900px overrides), not invented - column boxes below 900px,
+ * a horizontal row above it; the record panel becomes a two-column grid at
+ * the same breakpoint. ml-[168px]/mr-[440px] are this project's own added
+ * indent, not present in the source.
  */
 export function DefaultAndRecord() {
   const sceneRef = useRef<HTMLElement | null>(null);
@@ -23,9 +30,10 @@ export function DefaultAndRecord() {
   const [shown, setShown] = useState(false);
 
   useScrub(sceneRef, stageRef, (p) => {
-    const eased = sm(p);
     if (circleRef.current) {
-      circleRef.current.style.transform = `scale(${1 + eased * 1.4})`;
+      const travel = c01(p);
+      circleRef.current.style.transformOrigin = "top right";
+      circleRef.current.style.transform = `scale(${1 + travel * 1.3})`;
     }
     if (contentRef.current) {
       contentRef.current.style.opacity = String(1 - c01(p / 0.5));
@@ -45,18 +53,18 @@ export function DefaultAndRecord() {
       >
         <div
           ref={circleRef}
-          className="absolute right-[-170px] top-[-190px] z-0 h-[340px] w-[340px] rounded-full bg-blush-w will-change-transform"
+          className="absolute right-[-170px] top-[-190px] z-0 h-[340px] w-[340px] rounded-full bg-blush-w will-change-transform min-[900px]:right-[-11vw] min-[900px]:top-[-14vw] min-[900px]:h-[34vw] min-[900px]:w-[34vw] min-[900px]:max-h-[620px] min-[900px]:max-w-[620px]"
         />
 
-        <div ref={contentRef} className="relative z-[1] will-change-[opacity]">
-          <p className="max-w-[640px] font-serif text-[29px] font-medium leading-[1.3] text-navy">
+        <div ref={contentRef} className="relative z-[1] ml-[168px] will-change-[opacity]">
+          <p className="max-w-[640px] font-serif text-[29px] font-medium leading-[1.3] text-navy min-[900px]:max-w-[22ch] min-[900px]:text-[clamp(40px,3.4vw,58px)] min-[900px]:leading-[1.22]">
             {defaultBeat.question}
           </p>
-          <div className="mt-11 flex max-w-[900px] flex-col gap-3">
+          <div className="mt-11 mr-[440px] flex flex-wrap gap-4">
             {defaultBeat.boxes.map((label) => (
               <div
                 key={label}
-                className="border-2 border-navy bg-ivory px-4 py-[22px] text-center text-[12.5px] font-medium uppercase tracking-[0.18em] text-navy"
+                className="flex min-w-[180px] flex-1 items-center justify-center border-2 border-navy bg-ivory px-6 py-7 text-center text-base font-semibold uppercase tracking-[0.18em] text-navy transition-colors duration-200 hover:bg-navy hover:text-ivory sm:text-lg"
               >
                 {label}
               </div>
@@ -71,11 +79,11 @@ export function DefaultAndRecord() {
         >
           <div className="absolute left-[-52%] top-0 h-[135%] w-[204%] rounded-t-full bg-gold" />
           <div className="absolute left-[-52%] top-1 h-[135%] w-[204%] overflow-hidden rounded-t-full bg-navy">
-            <div className="relative mx-auto max-w-[820px] px-8 pt-[24vh] text-ivory">
-              <h2 className="font-serif text-[32px] font-semibold tracking-[0.04em]">
+            <div className="relative mx-auto max-w-[820px] px-8 pt-[24vh] text-ivory min-[900px]:grid min-[900px]:max-w-[1280px] min-[900px]:grid-cols-[0.8fr_1.7fr] min-[900px]:items-start min-[900px]:gap-[6vw] min-[900px]:px-[4vw] min-[900px]:pt-[27vh]">
+              <h2 className="font-serif text-[32px] font-semibold tracking-[0.04em] min-[900px]:text-[clamp(48px,4vw,68px)]">
                 {record.heading}
               </h2>
-              <ul className="mt-6 flex flex-col gap-3">
+              <ul className="mt-6 flex flex-col gap-3 min-[900px]:mt-0">
                 {record.items.map((item, i) => (
                   <li
                     key={item}

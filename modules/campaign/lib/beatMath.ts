@@ -26,3 +26,22 @@ export function stepF(p: number, count: number) {
   const t = r - i;
   return i + sm((t - LEAD) / TRAV);
 }
+
+export function lerp(a: number, b: number, x: number) {
+  return a + (b - a) * x;
+}
+
+/**
+ * Ported from the handoff build's beat 5 (site/index.html): "eased
+ * landing: covers ground early, decelerates long into the seat. No
+ * overshoot - weight, not spring."
+ */
+export function land(x: number) {
+  return 1 - Math.pow(1 - sm(x), 2.1);
+}
+
+/** Ported from beat 4's tail(): the decelerating exit curve a pillar title
+ *  follows as it leaves the beam (site/index.html). */
+export function tail(x: number) {
+  return 1 - Math.pow(1 - sm(x), 1.7);
+}

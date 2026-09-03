@@ -29,7 +29,7 @@ export function BackToCampaign() {
     <Link
       href="/"
       onClick={handleClick}
-      className="border-b border-gold/60 pb-0.5 text-[11px] font-medium uppercase tracking-[0.18em] text-ivory/70 hover:text-ivory"
+      className="border-b border-gold-d/60 pb-0.5 text-[11px] font-medium uppercase tracking-[0.18em] text-navy/70 hover:text-navy"
     >
       &larr; Back to the campaign
     </Link>

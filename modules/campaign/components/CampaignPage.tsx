@@ -4,18 +4,22 @@ import { DefaultAndRecord } from "./DefaultAndRecord";
 import { Foundation } from "./Foundation";
 import { Stones } from "./Stones";
 import { Ask } from "./Ask";
+import { Footer } from "./Footer";
+import { ScrollTriggerRefresher } from "./ScrollTriggerRefresher";
 
 /** The six-beat scroll-scrubbed campaign page, assembled in order. */
 export function CampaignPage() {
   return (
     <>
       <SiteHeader />
+      <ScrollTriggerRefresher />
       <main>
         <Opener />
         <DefaultAndRecord />
         <Foundation />
         <Stones />
         <Ask />
+        <Footer />
       </main>
     </>
   );

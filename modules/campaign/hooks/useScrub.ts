@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type RefObject } from "react";
-import { registerGsap, ScrollTrigger } from "@/lib/gsap/registerGsap";
+import { registerGsap } from "@/lib/gsap/registerGsap";
 import { scrub } from "@/modules/campaign/lib/scrub";
 import { useReducedMotion } from "./useReducedMotion";
 
@@ -34,7 +34,6 @@ export function useScrub(
 
     registerGsap();
     const trigger = scrub(sceneEl, stageEl, (p) => onProgressRef.current(p));
-    ScrollTrigger.refresh();
 
     return () => trigger.kill();
   }, [sceneRef, stageRef, reduced]);
