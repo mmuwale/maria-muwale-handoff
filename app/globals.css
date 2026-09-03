@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+/*
+ * The locked campaign identity (CONSTRAINTS.md #6). Derived from the campaign
+ * poster. Do not add a second source of truth for these values - every color
+ * on the site must resolve through one of these tokens.
+ */
+:root {
+  --color-navy: #0b1f3a;
+  --color-navy-d: #071528;
+  --color-ivory: #f6e9e0;
+  --color-gold: #bfa671;
+  --color-gold-d: #a87b47;
+  --color-blush-w: #e09590;
+  --color-blush-i: #b26b67;
+  --color-blush-n: #d9a3a8;
+  --color-neutral-ph: #c1c1c0;
+
+  --font-serif: var(--font-cormorant), Georgia, serif;
+  --font-sans-campaign: var(--font-montserrat), Arial, Helvetica, sans-serif;
+}
+
+@theme inline {
+  --color-navy: var(--color-navy);
+  --color-navy-d: var(--color-navy-d);
+  --color-ivory: var(--color-ivory);
+  --color-gold: var(--color-gold);
+  --color-gold-d: var(--color-gold-d);
+  --color-blush-w: var(--color-blush-w);
+  --color-blush-i: var(--color-blush-i);
+  --color-blush-n: var(--color-blush-n);
+  --color-neutral-ph: var(--color-neutral-ph);
+  --font-serif: var(--font-serif);
+  --font-sans-campaign: var(--font-sans-campaign);
+}
+
+html {
+  background: #050e1c;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans-campaign);
+  color: var(--color-navy);
+  background: var(--color-ivory);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Beat 1 (the opener): the hero name writes on via an expanding clip-path.
+   The `to` keyframe is deliberately generous (-0.3em past the glyphs) so a
+   name with no descenders reads identically whether or not this animation
+   has finished - see ARCHITECTURE.md section 10 in the source handoff. */
+@keyframes writeon {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 -0.3em 0 0);
+  }
+}
+.op-writeon {
+  animation: writeon 0.75s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.op-writeon-delay {
+  animation-delay: 0.18s;
+}
+
+/* The gold sweep: a pass across the name, not an object - it must start and
+   end at opacity 0 or `both` parks a gold slab beside the name forever. */
+@keyframes sweep {
+  0% {
+    left: -34%;
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  78% {
+    opacity: 1;
+  }
+  100% {
+    left: 66%;
+    opacity: 0;
+  }
+}
+.op-sweep {
+  animation: sweep 1s ease-in-out 0.5s 1 both;
+}
