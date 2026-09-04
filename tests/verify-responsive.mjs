@@ -12,7 +12,32 @@ const VIEWPORTS = [
   { name: 'desktop-1440', width: 1440, height: 900 },
 ];
 
+/* Every width the mobile hero layout has to survive, not just two of them.
+   Tailwind's sm: breakpoint is 640, so 431..639 is still the phone layout and
+   is exactly where a portrait sized by width rather than by its grid row grows
+   tall enough to slide up behind the office lines. That band shipped broken
+   because this file only tested 375 and 430. */
+const HERO_SWEEP = [320, 360, 375, 390, 414, 430, 480, 540, 600, 639, 640, 768, 1024, 1440];
+
 const rect = async (loc) => loc.first().boundingBox();
+
+/* The portrait is object-contain with a transparent cut-out, so its element
+   box is much wider than the pixels that are actually painted. Comparing
+   against the box produces false overlaps wherever the box is letterboxed.
+   This returns the rect the image really occupies. */
+const paintedRect = async (page, selector) =>
+  page.evaluate((sel) => {
+    const el = document.querySelector(sel);
+    if (!el) return null;
+    const r = el.getBoundingClientRect();
+    const nw = el.naturalWidth, nh = el.naturalHeight;
+    if (!nw || !nh) return { x: r.left, y: r.top, width: r.width, height: r.height };
+    const scale = Math.min(r.width / nw, r.height / nh);
+    const w = nw * scale, h = nh * scale;
+    const pos = getComputedStyle(el).objectPosition;
+    const bottom = /bottom/.test(pos);
+    return { x: r.left + (r.width - w) / 2, y: bottom ? r.bottom - h : r.top + (r.height - h) / 2, width: w, height: h };
+  }, selector);
 const overlap = (a, b) =>
   !!a && !!b && !(a.x + a.width <= b.x || b.x + b.width <= a.x || a.y + a.height <= b.y || b.y + b.height <= a.y);
 
@@ -38,14 +63,16 @@ for (const vp of VIEWPORTS) {
   const cell = vp.name;
 
   /* ---- hero: nothing overlaps the portrait, nothing hides under the header ---- */
-  const portrait = await rect(page.locator('img[alt="Maria Muwale"]'));
+  const portrait = await paintedRect(page, 'img[alt="Maria Muwale"]');
   const officeLine = await rect(page.locator('text=Female Academic Representative').first());
   const cta = await rect(page.locator('a', { hasText: 'Explore my vision' }));
   const header = await rect(page.locator('header'));
   const nameLine = await rect(page.locator('.op-writeon'));
 
   ok(cell, 'office line does not overlap the portrait', !overlap(officeLine, portrait), { officeLine, portrait });
-  ok(cell, 'the hero carries no body paragraph', await page.locator('section').first().locator('p').count() === 0, await page.locator('section').first().locator('p').count());
+  const heroText = (await page.locator('section').first().innerText()).replace(/\s+/g, ' ');
+  ok(cell, 'the hero no longer carries the question paragraph',
+    !/What if our academic experience/i.test(heroText), heroText.slice(0, 70));
   ok(cell, 'primary CTA does not overlap the portrait', !overlap(cta, portrait), { cta });
   ok(cell, 'name is not hidden under the fixed header', nameLine && header && nameLine.y >= header.y + header.height - 1, { nameY: nameLine?.y, headerBottom: header ? header.y + header.height : null });
   ok(cell, 'portrait is a usable size', portrait && portrait.width >= 100, { portraitW: portrait?.width });
@@ -107,6 +134,35 @@ for (const vp of VIEWPORTS) {
 
   ok(cell, 'no page or console errors', errors.length === 0, errors.slice(0, 3));
 
+  await ctx.close();
+}
+
+/* ---- the hero must not overlap itself at ANY width ---- */
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(BASE + '/', { waitUntil: 'networkidle' });
+  for (const w of HERO_SWEEP) {
+    await page.setViewportSize({ width: w, height: w < 640 ? 812 : 900 });
+    await page.waitForTimeout(350);
+    const portraitR = await paintedRect(page, 'img[alt="Maria Muwale"]');
+    const parts = {
+      name: await rect(page.locator('h1')),
+      office: await rect(page.locator('text=Female Academic Representative').first()),
+      institution: await rect(page.locator('text=Strathmore University').first()),
+      cta: await rect(page.locator('a', { hasText: 'Explore my vision' })),
+      cta2: await rect(page.locator('a', { hasText: 'Meet Maria' })),
+    };
+    const hit = Object.entries(parts).filter(([, r]) => overlap(r, portraitR)).map(([k]) => k);
+    /* Only meaningful below the sm breakpoint. At 640 and up the layout is two
+       columns and the composition deliberately lets the portrait's frame and
+       the blush circle sit behind the name, so an overlap there is the design,
+       not a defect. Below 640 it is a single column and any overlap means text
+       is sitting on the photograph. */
+    if (w < 640) ok('hero-sweep', `nothing overlaps the portrait at ${w}px`, hit.length === 0, { overlapping: hit, portrait: portraitR });
+    const hs = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);
+    ok('hero-sweep', `no horizontal scroll at ${w}px`, !hs, null);
+  }
   await ctx.close();
 }
 

@@ -1,18 +1,16 @@
 import { ask } from "@/modules/campaign/data/ask";
 import { facts } from "@/modules/shared/data/facts";
-import { Countdown } from "@/components/Countdown";
 import { ShareButton } from "./ShareButton";
 
 /**
  * Beat 6. Normal document flow, no pinning. Structure ported from the
  * handoff build's .ask/.askCol (askLeft: slogan + "with Muwale." + quote;
- * askRight: countdown + acts + contacts) plus .askTail (spark rule, closer,
+ * askRight: acts + contacts) plus .askTail (spark rule, closer,
  * hashtag) and .baseline - site/index.html lines 215-243, 291-308.
  *
- * The countdown sits here, above the actions, which is where the reference
- * build puts it. It had been moved up into the opener, which left beat 1
- * carrying the name, the slogan, a question, two buttons and a clock, and
- * left this beat without the one element that gives the ask its urgency.
+ * The countdown lives in the opener, not here, at the client's request. The
+ * reference build puts it in this beat, so that is a deliberate divergence,
+ * and it is why this column starts with the actions.
  */
 export function Ask() {
   return (
@@ -45,10 +43,6 @@ export function Ask() {
         </div>
 
         <div>
-          <div className="mt-6 border-2 border-gold px-3.5 py-3.5 min-[900px]:mt-0 min-[900px]:px-4 min-[900px]:py-5">
-            <Countdown theme="dark" />
-          </div>
-
           <div className="mt-3.5 flex flex-col gap-2.5 min-[900px]:mt-4 min-[900px]:gap-[11px]">
             <div className="border-2 border-gold px-3.5 py-3.5 text-center text-xs font-semibold uppercase tracking-[0.14em] text-gold min-[900px]:px-4 min-[900px]:py-4 min-[900px]:text-[13px]">
               {ask.voteButtonLabel}

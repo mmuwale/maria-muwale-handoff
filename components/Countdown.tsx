@@ -64,11 +64,11 @@ export function Countdown({ theme = "light" }: { theme?: "light" | "dark" }) {
 
   return (
     <div className="flex flex-col items-center gap-2">
-      <div className="flex flex-nowrap justify-center gap-1.5 sm:flex-wrap sm:gap-2.5">
+      <div className="flex flex-nowrap justify-center gap-1.5 min-[900px]:flex-wrap min-[900px]:gap-2.5">
         {cells.map(([cellLabel, value]) => (
-          <div key={cellLabel} className={`min-w-0 flex-1 rounded-2xl px-2 py-2.5 text-center sm:min-w-[78px] sm:flex-none sm:px-4 sm:py-3 ${cell}`}>
-            <b className="block text-[20px] leading-none sm:text-[25px]">{pad(value)}</b>
-            <small className={`text-[9px] uppercase tracking-[0.08em] sm:text-[10px] sm:tracking-[0.12em] ${label}`}>
+          <div key={cellLabel} className={`min-w-0 flex-1 rounded-2xl px-2 py-2.5 text-center min-[900px]:min-w-[78px] min-[900px]:flex-none min-[900px]:px-4 min-[900px]:py-3 ${cell}`}>
+            <b className="block text-[20px] leading-none min-[900px]:text-[25px]">{pad(value)}</b>
+            <small className={`text-[9px] uppercase tracking-[0.08em] min-[900px]:text-[10px] min-[900px]:tracking-[0.12em] ${label}`}>
               {cellLabel}
             </small>
           </div>

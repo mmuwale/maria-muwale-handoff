@@ -4,6 +4,7 @@ import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { opener } from "@/modules/campaign/data/opener";
+import { Countdown } from "@/components/Countdown";
 import { useScrub } from "@/modules/campaign/hooks/useScrub";
 import { fade } from "@/modules/campaign/lib/openerMath";
 
@@ -116,13 +117,15 @@ export function Opener() {
                   Meet Maria
                 </Link>
               </div>
+
+              <Countdown theme="light" />
             </div>
           </div>
 
           <div className="relative z-0 h-full min-h-0">
             <div
               ref={circleRef}
-              className="absolute right-[-120px] top-[-30px] z-0 h-[300px] w-[300px] rounded-full bg-blush-w will-change-transform sm:right-[-60px] sm:top-1/2 sm:h-[620px] sm:w-[620px] sm:-translate-y-1/2 lg:h-[760px] lg:w-[760px]"
+              className="absolute right-[-110px] top-0 z-0 h-[min(300px,100%)] w-[min(300px,78vw)] rounded-full bg-blush-w will-change-transform sm:right-[-60px] sm:top-1/2 sm:h-[620px] sm:w-[620px] sm:-translate-y-1/2 lg:h-[760px] lg:w-[760px]"
             />
             <Image
               ref={portraitRef}
@@ -131,7 +134,7 @@ export function Opener() {
               width={460}
               height={664}
               priority
-              className="absolute bottom-0 right-[-38px] z-10 h-auto w-[min(344px,82vw)] max-w-none object-contain object-bottom drop-shadow-[0_20px_30px_rgba(11,31,58,0.18)] will-change-transform sm:right-[95px] sm:w-[min(520px,42vw)]"
+              className="absolute bottom-0 right-[-24px] z-10 h-full max-h-full min-h-[150px] w-auto max-w-none object-contain object-bottom drop-shadow-[0_20px_30px_rgba(11,31,58,0.18)] will-change-transform sm:right-[95px] sm:h-auto sm:max-h-none sm:w-[min(520px,42vw)]"
             />
           </div>
         </div>
