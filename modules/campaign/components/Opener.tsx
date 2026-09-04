@@ -59,23 +59,33 @@ export function Opener() {
   return (
     <section ref={sceneRef} className="relative" style={{ height: "190vh" }}>
       <div ref={stageRef} className="sticky top-0 h-dvh overflow-hidden bg-ivory">
-        <div className="relative z-10 grid h-full grid-cols-1 gap-8 px-8 py-10 sm:grid-cols-2 sm:gap-16 sm:px-16 sm:py-14 lg:px-24">
-          <div className="flex flex-col gap-10 sm:h-full sm:justify-between">
-            <div ref={nameGroupRef} className="mt-10 will-change-transform">
-              <div className="relative overflow-hidden">
-                <span className="op-writeon relative inline-block align-top font-serif text-[clamp(64px,11vw,148px)] font-semibold leading-[0.84] tracking-[0.01em] text-navy">
-                  {opener.first}
-                  <span className="op-sweep pointer-events-none absolute inset-y-0 left-[-40%] w-[34%] bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
-                </span>
-              </div>
-              <div className="relative overflow-hidden">
-                <span className="op-writeon op-writeon-delay relative inline-block align-top font-serif text-[clamp(64px,11vw,148px)] font-semibold leading-[0.84] tracking-[0.01em] text-blush-i">
-                  {opener.last}
-                  <span className="op-sweep pointer-events-none absolute inset-y-0 left-[-40%] w-[34%] bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
-                </span>
-              </div>
+        {/* On phones this is one column, so the two children are two rows. With
+            equal default tracks the text row overflows its track and collides
+            with the portrait. grid-rows-[auto_minmax(0,1fr)] lets the text take
+            what it needs and gives the portrait whatever is left. */}
+        <div className="relative z-10 grid h-full grid-cols-1 grid-rows-[auto_minmax(0,1fr)] gap-4 px-8 pb-6 pt-[76px] sm:grid-cols-2 sm:grid-rows-none sm:gap-16 sm:px-16 sm:pb-14 sm:pt-14 lg:px-24">
+          <div className="relative z-20 flex min-w-0 flex-col gap-6 sm:h-full sm:justify-between sm:gap-10">
+            <div ref={nameGroupRef} className="mt-2 will-change-transform sm:mt-10">
+              {/* Her name is the page's h1. The campaign page previously had no
+                  h1 at all, so the whole heading outline started at h2. This is
+                  a block wrapper with no styling of its own, so the two lines
+                  lay out exactly as before. */}
+              <h1 className="m-0 text-inherit font-normal">
+                <div className="relative overflow-hidden">
+                  <span className="op-writeon relative inline-block align-top font-serif text-[clamp(46px,11vw,148px)] font-semibold leading-[0.84] tracking-[0.01em] text-navy">
+                    {opener.first}
+                    <span className="op-sweep pointer-events-none absolute inset-y-0 left-[-40%] w-[34%] bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
+                  </span>
+                </div>
+                <div className="relative overflow-hidden">
+                  <span className="op-writeon op-writeon-delay relative inline-block align-top font-serif text-[clamp(46px,11vw,148px)] font-semibold leading-[0.84] tracking-[0.01em] text-blush-i">
+                    {opener.last}
+                    <span className="op-sweep pointer-events-none absolute inset-y-0 left-[-40%] w-[34%] bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
+                  </span>
+                </div>
+              </h1>
 
-              <div ref={eyebrowRef} className="mt-9">
+              <div ref={eyebrowRef} className="mt-5 sm:mt-9">
                 <div className="mb-2 flex items-center gap-2.5">
                   <span className="h-px w-12 bg-gold-d" />
                   <span className="text-sm font-bold uppercase tracking-[0.28em] text-gold-d sm:text-base">
@@ -92,12 +102,12 @@ export function Opener() {
               </div>
             </div>
 
-            <div ref={copyRef} className="flex flex-col gap-5">
+            <div ref={copyRef} className="flex flex-col gap-3 sm:gap-5">
               <div className="text-xl font-bold uppercase tracking-[0.14em] text-navy sm:text-2xl">
                 Connect &middot; Engage &middot; Excel
               </div>
 
-              <p className="max-w-[480px] font-serif text-[22px] leading-[1.35] text-navy/85 sm:text-[26px]">
+              <p className="max-w-[480px] font-serif text-[19px] leading-[1.3] text-navy/85 sm:text-[26px] sm:leading-[1.35]">
                 What if our academic experience could be more than classes,
                 examinations and waiting for graduation?
               </p>
@@ -123,10 +133,10 @@ export function Opener() {
             </div>
           </div>
 
-          <div className="relative h-full">
+          <div className="relative z-0 h-full min-h-0">
             <div
               ref={circleRef}
-              className="absolute right-[-40px] top-1/2 z-0 h-[480px] w-[480px] -translate-y-1/2 rounded-full bg-blush-w will-change-transform sm:right-[-60px] sm:h-[620px] sm:w-[620px] lg:h-[760px] lg:w-[760px]"
+              className="absolute right-[-90px] bottom-[-60px] z-0 h-[300px] w-[300px] rounded-full bg-blush-w will-change-transform sm:right-[-60px] sm:top-1/2 sm:bottom-auto sm:h-[620px] sm:w-[620px] sm:-translate-y-1/2 lg:h-[760px] lg:w-[760px]"
             />
             <Image
               ref={portraitRef}
@@ -135,12 +145,12 @@ export function Opener() {
               width={460}
               height={664}
               priority
-              className="absolute bottom-0 right-[75px] z-10 w-[min(420px,64vw)] drop-shadow-[0_20px_30px_rgba(11,31,58,0.18)] will-change-transform sm:right-[95px] sm:w-[min(520px,42vw)]"
+              className="absolute bottom-0 right-[-8px] z-10 h-full min-h-[190px] w-auto max-w-none object-contain object-bottom drop-shadow-[0_20px_30px_rgba(11,31,58,0.18)] will-change-transform sm:right-[95px] sm:h-auto sm:w-[min(520px,42vw)]"
             />
           </div>
         </div>
 
-        <div className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 text-[9px] font-medium uppercase tracking-[0.3em] text-navy/50">
+        <div className="absolute bottom-6 left-8 z-20 text-[9px] font-medium uppercase tracking-[0.3em] text-navy/50 sm:left-1/2 sm:bottom-8 sm:-translate-x-1/2">
           {opener.cue}
         </div>
 
