@@ -30,11 +30,32 @@ export const metadata: Metadata = {
     "Maria Muwale for Female Academic Representative, Strathmore University. Vote 11 September 2026, 9:00 am - noon.",
   icons: {
     icon: [
+      { url: "/favicon.ico", sizes: "any" },
       { url: "/favicon-16.png", sizes: "16x16", type: "image/png" },
       { url: "/favicon-32.png", sizes: "32x32", type: "image/png" },
       { url: "/favicon-48.png", sizes: "48x48", type: "image/png" },
     ],
     apple: "/apple-touch-icon.png",
+  },
+  // The share card. This is how the site travels on WhatsApp, which is how
+  // most of this electorate will meet it. Without an og:image a shared link
+  // previews as bare text. og.jpg is the original 1200x630 card, restored.
+  openGraph: {
+    images: [
+      {
+        url: "/og.jpg",
+        width: 1200,
+        height: 630,
+        type: "image/jpeg",
+        alt: "Maria Muwale, for Female Academic Representative, Strathmore University.",
+      },
+    ],
+    siteName: "Maria Muwale for Female Academic Representative",
+    locale: "en_KE",
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/og.jpg"],
   },
 };
 

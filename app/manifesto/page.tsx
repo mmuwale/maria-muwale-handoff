@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { OG_IMAGE } from "@/modules/shared/data/og-image";
 import { ManifestoPage } from "@/modules/manifesto/components/ManifestoPage";
 
 export const metadata: Metadata = {
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
     title: "Campaign Manifesto - Maria Muwale",
     description:
       "Smart Learning Spaces, Interfaculty Projects, Industrial Visits, Faculty Spotlight Week.",
+      images: [OG_IMAGE],
   },
 };
 
