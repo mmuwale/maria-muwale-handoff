@@ -5,14 +5,20 @@ import { playfair } from "./playfair";
 /**
  * Ported from maria_website_simulation.html's .manifesto section.
  *
- * overflow-hidden on the section: the reveal-left/reveal-right cards start at
+ * overflow-x-clip on the section: the reveal-left/reveal-right cards start at
  * translateX(-44px)/translateX(44px), which on a phone pushes them ~18px past
- * the viewport and gives the whole page a horizontal scrollbar. Clipping here
- * contains the pre-animation offset without changing the motion.
+ * the viewport and gives the whole page a horizontal scrollbar.
+ *
+ * It must be `clip`, NOT `hidden`. An overflow:hidden box is a scroll
+ * container, and animation-timeline: view() resolves against the nearest
+ * scroll container. Using hidden here re-parented these cards' reveal
+ * timelines onto a box that never scrolls, so they froze partway: the top row
+ * happened to land at opacity 1, the bottom row sat at 0.49 to 0.82 forever.
+ * overflow-x: clip contains the offset without creating a scrollport.
  */
 export function PillarsSection() {
   return (
-    <section id="manifesto" className="overflow-hidden bg-white px-[7vw] py-20">
+    <section id="manifesto" className="overflow-x-clip bg-white px-[7vw] py-20">
       <div className="mx-auto mb-[45px] max-w-[820px] text-center">
         <div className="text-[13px] font-bold uppercase tracking-[0.16em] text-[#d98f96]">
           {pillarsIntro.eyebrow}

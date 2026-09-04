@@ -248,6 +248,30 @@ for (const vp of VIEWPORTS) {
   ok(cell, 'Record content never sits off the left edge', walk.worstLeft >= 0, { worstLeft: walk.worstLeft });
   ok(cell, 'no horizontal scroll anywhere down the page', !walk.hscroll, walk.hscroll);
 
+  /* ---- every scroll-driven reveal must actually finish revealing ----
+     These use animation-timeline: view(), which resolves against the nearest
+     SCROLL CONTAINER. Putting overflow:hidden on an ancestor silently
+     re-parents the timeline onto a box that never scrolls and freezes the
+     animation partway: the pillars' bottom row sat at 0.49 to 0.82 opacity
+     permanently, looking washed out next to the top row. Use overflow-x: clip
+     if you need to contain something; clip does not create a scrollport. */
+  {
+    const stuck = await page.evaluate(async () => {
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      const els = [...document.querySelectorAll('[class*="reveal-"]')];
+      const bad = [];
+      for (const e of els) {
+        e.scrollIntoView({ block: 'center' });
+        await sleep(260);
+        const o = +getComputedStyle(e).opacity;
+        if (o < 0.9) bad.push({ text: (e.textContent || '').trim().slice(0, 34), opacity: +o.toFixed(3) });
+      }
+      window.scrollTo(0, 0);
+      return { total: els.length, bad };
+    });
+    ok(cell, 'every scroll-driven reveal reaches full opacity', stuck.bad.length === 0, stuck);
+  }
+
   ok(cell, 'no page or console errors', errors.length === 0, errors.slice(0, 3));
 
   await ctx.close();
