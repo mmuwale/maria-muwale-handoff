@@ -55,6 +55,11 @@ export function Countdown({ theme = "light" }: { theme?: "light" | "dark" }) {
     );
   }
 
+  /* No label under the cells while counting down: the owner removed
+     "Vote 11 September - 9:00 am" from the hero. The date still appears in
+     beat 6 and on the manifesto. The voting and results states above KEEP
+     their label, because "Polls are open" and "Results at 1:30 pm" are the
+     only thing explaining a countdown that has stopped counting. */
   const cells: Array<[string, number]> = [
     ["Days", state.days],
     ["Hours", state.hours],
@@ -74,7 +79,6 @@ export function Countdown({ theme = "light" }: { theme?: "light" | "dark" }) {
           </div>
         ))}
       </div>
-      <p className={`rounded px-1.5 py-0.5 text-[10px] uppercase tracking-[0.1em] min-[900px]:text-[11px] ${label}`}>{state.label}</p>
     </div>
   );
 }

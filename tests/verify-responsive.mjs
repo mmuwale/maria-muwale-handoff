@@ -142,16 +142,16 @@ for (const vp of VIEWPORTS) {
       };
       const btn = document.querySelector('section a[href="/manifesto"]');
       const cellEl = [...document.querySelectorAll('b')].find((b) => /^\d\d$/.test(b.textContent.trim()));
-      const labelEl = [...document.querySelectorAll('p')].find((p) => /Vote 11 September/i.test(p.textContent));
+
       return {
         button: btn ? alpha(btn) : null,
         cell: cellEl ? alpha(cellEl.parentElement) : null,
-        label: labelEl ? alpha(labelEl) : null,
       };
     });
     ok(cell, 'the button has an opaque ground', opaque.button >= 0.8, opaque.button);
     ok(cell, 'the countdown cells have an opaque ground', opaque.cell >= 0.8, opaque.cell);
-    ok(cell, 'the countdown label has its own ground', opaque.label >= 0.8, opaque.label);
+    ok(cell, 'the hero no longer carries the Vote 11 September line',
+      !/Vote 11 September/i.test(await page.locator('section').first().innerText()), null);
   }
 
   /* ---- her name must never be cut off by its wrapper ---- */
@@ -168,18 +168,29 @@ for (const vp of VIEWPORTS) {
   });
   ok(cell, 'her name is not clipped by its wrapper', nameCut.length === 0, nameCut);
 
-  /* ---- the countdown sits at the foot of the hero, and says 9:00 am ---- */
+  /* ---- the countdown sits at the foot of the hero ---- */
   {
     const hero = page.locator('section').first();
-    const label = hero.locator('text=/Vote 11 September/').first();
-    const lr = await rect(label);
+    const cellsBox = await rect(hero.locator('b').filter({ hasText: /^\d\d$/ }).first());
     const heroBox = await rect(hero);
-    ok(cell, 'countdown label is inside the hero', !!lr, lr);
-    ok(cell, 'countdown sits in the lower half of the hero',
-      !!lr && !!heroBox && lr.y > heroBox.y + Math.min(heroBox.height, vp.height) * 0.5,
-      { labelY: lr && Math.round(lr.y), viewport: vp.height });
-    const txt = lr ? await label.innerText() : '';
-    ok(cell, 'countdown label drops the noon clause', /9:00\s*am\s*$/i.test(txt.trim()), txt.trim());
+    ok(cell, 'the countdown is inside the hero', !!cellsBox, cellsBox);
+    ok(cell, 'the countdown sits in the lower half of the hero',
+      !!cellsBox && !!heroBox && cellsBox.y > heroBox.y + Math.min(heroBox.height, vp.height) * 0.5,
+      { cellsY: cellsBox && Math.round(cellsBox.y), viewport: vp.height });
+    ok(cell, 'the scroll cue is gone',
+      !/scroll/i.test(await hero.innerText()), null);
+
+    /* The button is flush with the clock, not floating centred over it.
+       Measure the cell box, not the digit inside it: the digit is centred
+       within its own padding and sits a few px further right. */
+    const btn = await rect(hero.locator('a', { hasText: 'Explore my vision' }));
+    const rowX = await page.evaluate(() => {
+      const b = [...document.querySelectorAll('b')].find((x) => /^\d\d$/.test(x.textContent.trim()));
+      return b ? Math.round(b.parentElement.getBoundingClientRect().left) : null;
+    });
+    ok(cell, 'the button is left-aligned with the countdown',
+      !!btn && rowX !== null && Math.abs(btn.x - rowX) <= 2,
+      { buttonX: btn && Math.round(btn.x), countdownX: rowX });
   }
 
   /* ---- countdown fits on one row ---- */

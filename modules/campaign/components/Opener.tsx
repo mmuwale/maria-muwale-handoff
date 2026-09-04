@@ -107,7 +107,7 @@ export function Opener() {
                   centred over the clock. On phones it is pinned to the foot of
                   the stage; from 900px the column is justify-between so it
                   already sits in the bottom corner. */}
-              <div className="absolute bottom-[54px] left-8 flex w-fit flex-col items-center gap-3 min-[900px]:static">
+              <div className="absolute bottom-7 left-8 flex w-fit flex-col items-start gap-3 min-[900px]:static">
                 <Link
                   href="/manifesto"
                   className="rounded-full bg-navy px-4 py-2.5 text-[13px] font-bold text-ivory transition-colors hover:bg-navy-d min-[900px]:px-5 min-[900px]:py-3 min-[900px]:text-sm"
@@ -134,10 +134,6 @@ export function Opener() {
               className="absolute bottom-[-40px] right-[-50px] z-10 h-auto max-h-[60vh] w-[min(400px,96vw)] min-[780px]:max-h-[56vh] max-w-none object-contain object-bottom drop-shadow-[0_20px_30px_rgba(11,31,58,0.18)] will-change-transform min-[900px]:bottom-0 min-[900px]:right-[95px] min-[900px]:h-[min(74vh,720px)] min-[900px]:max-h-none min-[900px]:w-auto"
             />
           </div>
-        </div>
-
-        <div className="absolute bottom-6 left-8 z-20 text-[9px] font-medium uppercase tracking-[0.3em] text-navy/50 min-[900px]:left-1/2 min-[900px]:bottom-8 min-[900px]:-translate-x-1/2">
-          {opener.cue}
         </div>
 
         <div className="absolute inset-x-0 bottom-0 z-[6] h-2.5 bg-navy" />

@@ -3,5 +3,4 @@ export const opener = {
   last: "MUWALE",
   office: "Female Academic Representative",
   institution: "Strathmore University",
-  cue: "Scroll",
 } as const;
