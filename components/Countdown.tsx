@@ -46,11 +46,11 @@ export function Countdown({ theme = "light" }: { theme?: "light" | "dark" }) {
 
   if (state.phase !== "before") {
     return (
-      <div className="flex flex-col items-start min-[900px]:items-center gap-2">
+      <div className="flex flex-col items-center gap-2">
         <div className={`rounded-2xl px-5 py-3 text-center text-2xl font-bold ${cell}`}>
           Now
         </div>
-        <p className={`text-xs uppercase tracking-[0.12em] ${label}`}>{state.label}</p>
+        <p className={`text-[10px] uppercase tracking-[0.1em] min-[900px]:text-[11px] ${label}`}>{state.label}</p>
       </div>
     );
   }
@@ -63,18 +63,18 @@ export function Countdown({ theme = "light" }: { theme?: "light" | "dark" }) {
   ];
 
   return (
-    <div className="flex flex-col items-start min-[900px]:items-center gap-2">
-      <div className="flex w-full flex-nowrap justify-start gap-1.5 min-[900px]:flex-wrap min-[900px]:justify-center min-[900px]:gap-2.5">
+    <div className="flex flex-col items-center gap-2">
+      <div className="flex flex-nowrap justify-center gap-1.5 min-[900px]:gap-2">
         {cells.map(([cellLabel, value]) => (
-          <div key={cellLabel} className={`min-w-0 flex-1 rounded-2xl px-2 py-2.5 text-center min-[900px]:min-w-[78px] min-[900px]:flex-none min-[900px]:px-4 min-[900px]:py-3 ${cell}`}>
-            <b className="block text-[20px] leading-none min-[900px]:text-[25px]">{pad(value)}</b>
-            <small className={`text-[9px] uppercase tracking-[0.08em] min-[900px]:text-[10px] min-[900px]:tracking-[0.12em] ${label}`}>
+          <div key={cellLabel} className={`min-w-0 flex-1 rounded-xl px-1 py-1.5 text-center min-[900px]:min-w-[60px] min-[900px]:flex-none min-[900px]:px-2.5 min-[900px]:py-2 ${cell}`}>
+            <b className="block text-[15px] leading-none min-[900px]:text-[19px]">{pad(value)}</b>
+            <small className={`text-[8px] uppercase tracking-[0.06em] min-[900px]:text-[9px] min-[900px]:tracking-[0.1em] ${label}`}>
               {cellLabel}
             </small>
           </div>
         ))}
       </div>
-      <p className={`text-xs uppercase tracking-[0.12em] ${label}`}>{state.label}</p>
+      <p className={`text-[10px] uppercase tracking-[0.1em] min-[900px]:text-[11px] ${label}`}>{state.label}</p>
     </div>
   );
 }

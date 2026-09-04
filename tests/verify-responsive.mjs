@@ -17,7 +17,14 @@ const VIEWPORTS = [
    is exactly where a portrait sized by width rather than by its grid row grows
    tall enough to slide up behind the office lines. That band shipped broken
    because this file only tested 375 and 430. */
-const HERO_SWEEP = [320, 360, 375, 390, 414, 430, 480, 540, 600, 639, 640, 768, 1024, 1440];
+const HERO_SWEEP = [];
+for (let w = 320; w <= 1600; w += 20) HERO_SWEEP.push(w);
+
+/* The owner accepted a little overlap between the bottom-left button and the
+   portrait on the narrowest phones rather than shrink either further. It is
+   38px at 320 and gone by 400. This is the budget, not an aspiration: the name
+   and the office line must never touch the portrait at any width. */
+const CTA_OVERLAP_BUDGET_PX = 45;
 
 const rect = async (loc) => loc.first().boundingBox();
 
@@ -74,9 +81,23 @@ for (const vp of VIEWPORTS) {
   const heroText = (await page.locator('section').first().innerText()).replace(/\s+/g, ' ');
   ok(cell, 'the hero no longer carries the question paragraph',
     !/What if our academic experience/i.test(heroText), heroText.slice(0, 70));
-  ok(cell, 'primary CTA does not overlap the portrait', !overlap(cta, portrait), { cta });
+  ok(cell, 'the name does not overlap the portrait', !overlap(nameLine, portrait), { nameLine, portrait });
   ok(cell, 'name is not hidden under the fixed header', nameLine && header && nameLine.y >= header.y + header.height - 1, { nameY: nameLine?.y, headerBottom: header ? header.y + header.height : null });
   ok(cell, 'portrait is a usable size', portrait && portrait.width >= 100, { portraitW: portrait?.width });
+
+  /* ---- her name must never be cut off by its wrapper ---- */
+  const nameCut = await page.evaluate(() => {
+    const out = [];
+    document.querySelectorAll('.op-writeon').forEach((span) => {
+      const wrap = span.parentElement;
+      const rng = document.createRange();
+      rng.selectNodeContents(span.firstChild);
+      const cut = Math.round(rng.getBoundingClientRect().right - wrap.getBoundingClientRect().right);
+      if (cut > 1) out.push({ text: span.textContent.trim(), cut });
+    });
+    return out;
+  });
+  ok(cell, 'her name is not clipped by its wrapper', nameCut.length === 0, nameCut);
 
   /* ---- the countdown sits at the foot of the hero, and says 9:00 am ---- */
   {
@@ -173,9 +194,27 @@ for (const vp of VIEWPORTS) {
        the blush circle sit behind the name, so an overlap there is the design,
        not a defect. Below 640 it is a single column and any overlap means text
        is sitting on the photograph. */
-    if (w < 640) ok('hero-sweep', `nothing overlaps the portrait at ${w}px`, hit.length === 0, { overlapping: hit, portrait: portraitR });
+    if (w < 900) {
+      const overlapPx = (r) => (r && portraitR)
+        ? Math.max(0, Math.min(r.x + r.width, portraitR.x + portraitR.width) - Math.max(r.x, portraitR.x)) : 0;
+      const hard = ['name', 'office', 'institution'].filter((k) => hit.includes(k));
+      ok('hero-sweep', `the name and office never touch the portrait at ${w}px`, hard.length === 0, hard);
+      ok('hero-sweep', `the button overlaps the portrait by at most ${CTA_OVERLAP_BUDGET_PX}px at ${w}px`,
+        overlapPx(parts.cta) <= CTA_OVERLAP_BUDGET_PX, Math.round(overlapPx(parts.cta)));
+    }
     const hs = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);
     ok('hero-sweep', `no horizontal scroll at ${w}px`, !hs, null);
+    const cut = await page.evaluate(() => {
+      const out = [];
+      document.querySelectorAll('.op-writeon').forEach((span) => {
+        const rng = document.createRange();
+        rng.selectNodeContents(span.firstChild);
+        const c = Math.round(rng.getBoundingClientRect().right - span.parentElement.getBoundingClientRect().right);
+        if (c > 1) out.push(span.textContent.trim() + ' cut ' + c + 'px');
+      });
+      return out;
+    });
+    ok('hero-sweep', `her name is not clipped at ${w}px`, cut.length === 0, cut);
   }
   await ctx.close();
 }

@@ -10,8 +10,8 @@ import { FEEDBACK_FORM_SLUG } from "@/modules/shared/data/feedback-form";
  */
 export function SiteHeader() {
   return (
-    <header className="fixed inset-x-0 top-0 z-50 flex items-center justify-between border-b border-navy/10 bg-ivory/85 px-5 py-3.5 backdrop-blur-md sm:px-8">
-      <Link href="/" className="font-serif text-lg font-semibold tracking-[0.04em] text-navy">
+    <header className="fixed inset-x-0 top-0 z-50 flex items-center justify-between gap-3 border-b border-navy/10 bg-ivory/85 px-4 py-3 backdrop-blur-md sm:px-8 sm:py-3.5">
+      <Link href="/" className="whitespace-nowrap font-serif text-base font-semibold tracking-[0.04em] text-navy sm:text-lg">
         MARIA <span className="text-blush-i">MUWALE</span>
       </Link>
 
@@ -30,7 +30,7 @@ export function SiteHeader() {
         </Link>
         <Link
           href={`/forms/${FEEDBACK_FORM_SLUG}`}
-          className="rounded-full bg-navy px-4 py-2 text-xs font-bold uppercase tracking-[0.1em] text-ivory transition-colors hover:bg-navy-d"
+          className="whitespace-nowrap rounded-full bg-navy px-3 py-2 text-[10px] font-bold uppercase tracking-[0.06em] text-ivory transition-colors hover:bg-navy-d sm:px-4 sm:text-xs sm:tracking-[0.1em]"
         >
           Submit Feedback
         </Link>

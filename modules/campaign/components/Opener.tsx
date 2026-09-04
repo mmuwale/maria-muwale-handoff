@@ -63,65 +63,66 @@ export function Opener() {
             equal default tracks the text row overflows its track and collides
             with the portrait. grid-rows-[auto_minmax(0,1fr)] lets the text take
             what it needs and gives the portrait whatever is left. */}
-        <div className="relative z-10 grid h-full grid-cols-1 gap-4 px-8 pb-14 pt-[76px] sm:grid-cols-2 sm:gap-16 sm:px-16 sm:pb-14 sm:pt-14 lg:px-24">
-          <div className="z-20 flex min-w-0 flex-col gap-6 sm:h-full sm:justify-between sm:gap-10">
-            <div ref={nameGroupRef} className="mt-2 will-change-transform sm:mt-10">
+        <div className="relative z-10 grid h-full grid-cols-1 gap-4 px-8 pb-14 pt-[76px] min-[900px]:grid-cols-2 min-[900px]:gap-16 min-[900px]:px-16 min-[900px]:pb-14 min-[900px]:pt-14 lg:px-24">
+          <div className="z-20 flex min-w-0 flex-col gap-6 min-[900px]:h-full min-[900px]:justify-between min-[900px]:gap-10">
+            <div ref={nameGroupRef} className="mt-2 will-change-transform min-[900px]:mt-10">
               {/* Her name is the page's h1. The campaign page previously had no
                   h1 at all, so the whole heading outline started at h2. This is
                   a block wrapper with no styling of its own, so the two lines
                   lay out exactly as before. */}
               <h1 className="m-0 text-inherit font-normal">
                 <div className="relative overflow-hidden">
-                  <span className="op-writeon relative inline-block align-top font-serif text-[clamp(46px,11vw,148px)] font-semibold leading-[0.84] tracking-[0.01em] text-navy">
+                  <span className="op-writeon relative inline-block align-top font-serif text-[clamp(46px,11vw,148px)] min-[900px]:text-[min(calc((100vw-192px)/9),148px)] lg:text-[min(calc((100vw-256px)/9),148px)] font-semibold leading-[0.84] tracking-[0.01em] text-navy">
                     {opener.first}
                     <span className="op-sweep pointer-events-none absolute inset-y-0 left-[-40%] w-[34%] bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
                   </span>
                 </div>
                 <div className="relative overflow-hidden">
-                  <span className="op-writeon op-writeon-delay relative inline-block align-top font-serif text-[clamp(46px,11vw,148px)] font-semibold leading-[0.84] tracking-[0.01em] text-blush-i">
+                  <span className="op-writeon op-writeon-delay relative inline-block align-top font-serif text-[clamp(46px,11vw,148px)] min-[900px]:text-[min(calc((100vw-192px)/9),148px)] lg:text-[min(calc((100vw-256px)/9),148px)] font-semibold leading-[0.84] tracking-[0.01em] text-blush-i">
                     {opener.last}
                     <span className="op-sweep pointer-events-none absolute inset-y-0 left-[-40%] w-[34%] bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
                   </span>
                 </div>
               </h1>
 
-              <div ref={eyebrowRef} className="mt-5 sm:mt-9">
+              <div ref={eyebrowRef} className="mt-5 min-[900px]:mt-9">
                 <div className="mb-2 flex items-center gap-2.5">
                   <span className="h-px w-12 bg-gold-d" />
-                  <span className="text-sm font-bold uppercase tracking-[0.28em] text-gold-d sm:text-base">
+                  <span className="text-sm font-bold uppercase tracking-[0.28em] text-gold-d min-[900px]:text-base">
                     For
                   </span>
                   <span className="h-px w-12 bg-gold-d" />
                 </div>
-                <div className="text-sm font-semibold uppercase tracking-[0.28em] text-black sm:text-base">
+                <div className="text-sm font-semibold uppercase tracking-[0.28em] text-black min-[900px]:text-base">
                   {opener.office}
                 </div>
-                <div className="text-sm font-semibold uppercase tracking-[0.28em] text-gold-d sm:text-base">
+                <div className="text-sm font-semibold uppercase tracking-[0.28em] text-gold-d min-[900px]:text-base">
                   {opener.institution}
                 </div>
               </div>
             </div>
 
-            <div ref={copyRef} className="flex flex-col gap-3 sm:gap-5">
-              <div className="flex flex-wrap gap-3">
+            <div ref={copyRef} className="flex flex-col gap-3 min-[900px]:gap-5">
+              {/* Button and clock are one block, bottom left, with the button
+                  centred over the clock. On phones it is pinned to the foot of
+                  the stage; from 900px the column is justify-between so it
+                  already sits in the bottom corner. */}
+              <div className="absolute bottom-[54px] left-8 flex w-fit flex-col items-center gap-3 min-[900px]:static">
                 <Link
                   href="/manifesto"
-                  className="rounded-full bg-navy px-5 py-3 text-sm font-bold text-ivory transition-colors hover:bg-navy-d"
+                  className="rounded-full bg-navy px-4 py-2.5 text-[13px] font-bold text-ivory transition-colors hover:bg-navy-d min-[900px]:px-5 min-[900px]:py-3 min-[900px]:text-sm"
                 >
                   Explore my vision
                 </Link>
-              </div>
-
-              <div className="absolute bottom-[54px] left-8 w-[min(272px,72vw)] sm:static sm:w-auto">
                 <Countdown theme="light" />
               </div>
             </div>
           </div>
 
-          <div className="absolute inset-x-8 bottom-14 top-[76px] z-0 sm:relative sm:inset-auto sm:h-full sm:min-h-0">
+          <div className="absolute inset-x-8 bottom-14 top-[76px] z-0 min-[900px]:relative min-[900px]:inset-auto min-[900px]:h-full min-[900px]:min-h-0">
             <div
               ref={circleRef}
-              className="absolute right-[-84px] bottom-[4%] z-0 h-[min(210px,50%)] w-[min(210px,56vw)] rounded-full bg-blush-w will-change-transform sm:right-[-60px] sm:top-1/2 sm:h-[620px] sm:w-[620px] sm:-translate-y-1/2 lg:h-[760px] lg:w-[760px]"
+              className="absolute right-[-70px] bottom-[4%] z-0 h-[min(200px,48%)] w-[min(200px,50vw)] rounded-full bg-blush-w will-change-transform min-[900px]:right-[-60px] min-[900px]:top-1/2 min-[900px]:h-[620px] min-[900px]:w-[620px] min-[900px]:-translate-y-1/2 lg:h-[760px] lg:w-[760px]"
             />
             <Image
               ref={portraitRef}
@@ -130,12 +131,12 @@ export function Opener() {
               width={460}
               height={664}
               priority
-              className="absolute bottom-[-40px] right-[-22px] z-10 h-auto max-h-[42vh] w-[min(238px,56vw)] max-w-none object-contain object-bottom drop-shadow-[0_20px_30px_rgba(11,31,58,0.18)] will-change-transform sm:bottom-0 sm:right-[95px] sm:max-h-none sm:w-[min(520px,42vw)]"
+              className="absolute bottom-[-40px] right-[-40px] z-10 h-auto max-h-[42vh] w-[min(238px,50vw)] max-w-none object-contain object-bottom drop-shadow-[0_20px_30px_rgba(11,31,58,0.18)] will-change-transform min-[900px]:bottom-0 min-[900px]:right-[95px] min-[900px]:max-h-none min-[900px]:w-[min(520px,42vw)]"
             />
           </div>
         </div>
 
-        <div className="absolute bottom-6 left-8 z-20 text-[9px] font-medium uppercase tracking-[0.3em] text-navy/50 sm:left-1/2 sm:bottom-8 sm:-translate-x-1/2">
+        <div className="absolute bottom-6 left-8 z-20 text-[9px] font-medium uppercase tracking-[0.3em] text-navy/50 min-[900px]:left-1/2 min-[900px]:bottom-8 min-[900px]:-translate-x-1/2">
           {opener.cue}
         </div>
 
