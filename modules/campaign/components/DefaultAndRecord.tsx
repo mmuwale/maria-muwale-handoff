@@ -56,11 +56,11 @@ export function DefaultAndRecord() {
           className="absolute right-[-170px] top-[-190px] z-0 h-[340px] w-[340px] rounded-full bg-blush-w will-change-transform min-[900px]:right-[-11vw] min-[900px]:top-[-14vw] min-[900px]:h-[34vw] min-[900px]:w-[34vw] min-[900px]:max-h-[620px] min-[900px]:max-w-[620px]"
         />
 
-        <div ref={contentRef} className="relative z-[1] ml-[168px] will-change-[opacity]">
+        <div ref={contentRef} className="relative z-[1] will-change-[opacity] min-[900px]:ml-[168px]">
           <p className="max-w-[640px] font-serif text-[29px] font-medium leading-[1.3] text-navy min-[900px]:max-w-[22ch] min-[900px]:text-[clamp(40px,3.4vw,58px)] min-[900px]:leading-[1.22]">
             {defaultBeat.question}
           </p>
-          <div className="mt-11 mr-[440px] flex flex-wrap gap-4">
+          <div className="mt-11 flex flex-wrap gap-4 min-[900px]:mr-[440px]">
             {defaultBeat.boxes.map((label) => (
               <div
                 key={label}
@@ -79,7 +79,12 @@ export function DefaultAndRecord() {
         >
           <div className="absolute left-[-52%] top-0 h-[135%] w-[204%] rounded-t-full bg-gold" />
           <div className="absolute left-[-52%] top-1 h-[135%] w-[204%] overflow-hidden rounded-t-full bg-navy">
-            <div className="relative mx-auto max-w-[820px] px-8 pt-[24vh] text-ivory min-[900px]:grid min-[900px]:max-w-[1280px] min-[900px]:grid-cols-[0.8fr_1.7fr] min-[900px]:items-start min-[900px]:gap-[6vw] min-[900px]:px-[4vw] min-[900px]:pt-[27vh]">
+            {/* The parent curved band is w-[204%] at left-[-52%], so a block sized
+                against it lands ~195px off-canvas on a phone and the Record is
+                invisible for ~2.9 screens. 100/204 = 49.02% is exactly the stage
+                width. Not 100vw: that counts the scrollbar and reintroduces
+                horizontal scroll. */}
+            <div className="relative mx-auto w-[49.02%] max-w-[820px] px-8 pt-[24vh] text-ivory min-[900px]:grid min-[900px]:max-w-[1280px] min-[900px]:grid-cols-[0.8fr_1.7fr] min-[900px]:items-start min-[900px]:gap-[6vw] min-[900px]:px-[4vw] min-[900px]:pt-[27vh]">
               <h2 className="font-serif text-[32px] font-semibold tracking-[0.04em] min-[900px]:text-[clamp(48px,4vw,68px)]">
                 {record.heading}
               </h2>
