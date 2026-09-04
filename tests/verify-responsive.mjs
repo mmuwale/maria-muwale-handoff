@@ -85,6 +85,27 @@ for (const vp of VIEWPORTS) {
   ok(cell, 'name is not hidden under the fixed header', nameLine && header && nameLine.y >= header.y + header.height - 1, { nameY: nameLine?.y, headerBottom: header ? header.y + header.height : null });
   ok(cell, 'portrait is a usable size', portrait && portrait.width >= 100, { portraitW: portrait?.width });
 
+  /* ---- the portrait must match the reference build's sizing rule ----
+     site/index.html: below 900px  width:min(344px,82vw); height:auto
+                      900px and up height:min(74vh,720px); width:auto
+     Sized by width on desktop it reaches 94% of viewport height on a short
+     wide window and her head goes under the header. Sized by height it is
+     stable at 74% everywhere. Asserted, not assumed. */
+  {
+    const g = await page.evaluate(() => {
+      const img = document.querySelector('img[alt="Maria Muwale"]');
+      const r = img.getBoundingClientRect();
+      return { w: r.width, h: r.height, vw: window.innerWidth, vh: window.innerHeight,
+               ar: img.naturalWidth / img.naturalHeight };
+    });
+    const wide = g.vw >= 900;
+    const expH = wide ? Math.min(0.74 * g.vh, 720) : Math.min(344, 0.82 * g.vw) / g.ar;
+    const expW = wide ? expH * g.ar : Math.min(344, 0.82 * g.vw);
+    ok(cell, 'portrait width matches the reference rule', Math.abs(g.w - expW) <= 2, { got: Math.round(g.w), want: Math.round(expW) });
+    ok(cell, 'portrait height matches the reference rule', Math.abs(g.h - expH) <= 2, { got: Math.round(g.h), want: Math.round(expH) });
+    ok(cell, 'portrait is never taller than 80% of the viewport', g.h <= g.vh * 0.8, { pct: Math.round(g.h / g.vh * 100) });
+  }
+
   /* ---- her name must never be cut off by its wrapper ---- */
   const nameCut = await page.evaluate(() => {
     const out = [];
@@ -215,6 +236,15 @@ for (const vp of VIEWPORTS) {
       return out;
     });
     ok('hero-sweep', `her name is not clipped at ${w}px`, cut.length === 0, cut);
+    const head = await page.evaluate(() => {
+      const img = document.querySelector('img[alt="Maria Muwale"]');
+      const hd = document.querySelector('header');
+      if (!img || !hd) return null;
+      const r = img.getBoundingClientRect(), h = hd.getBoundingClientRect();
+      return { under: r.top < h.bottom - 2, pctH: Math.round(r.height / window.innerHeight * 100) };
+    });
+    ok('hero-sweep', `her head is not under the header at ${w}px`, head && !head.under, head);
+    ok('hero-sweep', `the portrait is at most 80% of viewport height at ${w}px`, head && head.pctH <= 80, head);
   }
   await ctx.close();
 }
