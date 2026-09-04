@@ -39,12 +39,13 @@ for (const vp of VIEWPORTS) {
 
   /* ---- hero: nothing overlaps the portrait, nothing hides under the header ---- */
   const portrait = await rect(page.locator('img[alt="Maria Muwale"]'));
-  const question = await rect(page.locator('p', { hasText: 'What if our academic experience' }));
+  const officeLine = await rect(page.locator('text=Female Academic Representative').first());
   const cta = await rect(page.locator('a', { hasText: 'Explore my vision' }));
   const header = await rect(page.locator('header'));
   const nameLine = await rect(page.locator('.op-writeon'));
 
-  ok(cell, 'question does not overlap the portrait', !overlap(question, portrait), { question, portrait });
+  ok(cell, 'office line does not overlap the portrait', !overlap(officeLine, portrait), { officeLine, portrait });
+  ok(cell, 'the hero carries no body paragraph', await page.locator('section').first().locator('p').count() === 0, await page.locator('section').first().locator('p').count());
   ok(cell, 'primary CTA does not overlap the portrait', !overlap(cta, portrait), { cta });
   ok(cell, 'name is not hidden under the fixed header', nameLine && header && nameLine.y >= header.y + header.height - 1, { nameY: nameLine?.y, headerBottom: header ? header.y + header.height : null });
   ok(cell, 'portrait is a usable size', portrait && portrait.width >= 100, { portraitW: portrait?.width });

@@ -6,7 +6,6 @@ import Link from "next/link";
 import { opener } from "@/modules/campaign/data/opener";
 import { useScrub } from "@/modules/campaign/hooks/useScrub";
 import { fade } from "@/modules/campaign/lib/openerMath";
-import { Countdown } from "@/components/Countdown";
 
 /**
  * Beat 1. Ported directly from the handoff build's beat1(s) function
@@ -103,15 +102,6 @@ export function Opener() {
             </div>
 
             <div ref={copyRef} className="flex flex-col gap-3 sm:gap-5">
-              <div className="text-xl font-bold uppercase tracking-[0.14em] text-navy sm:text-2xl">
-                Connect &middot; Engage &middot; Excel
-              </div>
-
-              <p className="max-w-[480px] font-serif text-[19px] leading-[1.3] text-navy/85 sm:text-[26px] sm:leading-[1.35]">
-                What if our academic experience could be more than classes,
-                examinations and waiting for graduation?
-              </p>
-
               <div className="flex flex-wrap gap-3">
                 <Link
                   href="/manifesto"
@@ -126,17 +116,13 @@ export function Opener() {
                   Meet Maria
                 </Link>
               </div>
-
-              <div className="mt-1">
-                <Countdown theme="light" />
-              </div>
             </div>
           </div>
 
           <div className="relative z-0 h-full min-h-0">
             <div
               ref={circleRef}
-              className="absolute right-[-90px] bottom-[-60px] z-0 h-[300px] w-[300px] rounded-full bg-blush-w will-change-transform sm:right-[-60px] sm:top-1/2 sm:bottom-auto sm:h-[620px] sm:w-[620px] sm:-translate-y-1/2 lg:h-[760px] lg:w-[760px]"
+              className="absolute right-[-120px] top-[-30px] z-0 h-[300px] w-[300px] rounded-full bg-blush-w will-change-transform sm:right-[-60px] sm:top-1/2 sm:h-[620px] sm:w-[620px] sm:-translate-y-1/2 lg:h-[760px] lg:w-[760px]"
             />
             <Image
               ref={portraitRef}
@@ -145,7 +131,7 @@ export function Opener() {
               width={460}
               height={664}
               priority
-              className="absolute bottom-0 right-[-8px] z-10 h-full min-h-[190px] w-auto max-w-none object-contain object-bottom drop-shadow-[0_20px_30px_rgba(11,31,58,0.18)] will-change-transform sm:right-[95px] sm:h-auto sm:w-[min(520px,42vw)]"
+              className="absolute bottom-0 right-[-38px] z-10 h-auto w-[min(344px,82vw)] max-w-none object-contain object-bottom drop-shadow-[0_20px_30px_rgba(11,31,58,0.18)] will-change-transform sm:right-[95px] sm:w-[min(520px,42vw)]"
             />
           </div>
         </div>
