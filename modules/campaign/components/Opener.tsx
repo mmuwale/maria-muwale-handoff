@@ -131,7 +131,7 @@ export function Opener() {
               width={460}
               height={664}
               priority
-              className="absolute bottom-[-40px] right-[-50px] z-10 h-auto max-h-[58vh] w-[min(344px,82vw)] max-w-none object-contain object-bottom drop-shadow-[0_20px_30px_rgba(11,31,58,0.18)] will-change-transform min-[900px]:bottom-0 min-[900px]:right-[95px] min-[900px]:h-[min(74vh,720px)] min-[900px]:max-h-none min-[900px]:w-auto"
+              className="absolute bottom-[-40px] right-[-50px] z-10 h-auto max-h-[60vh] w-[min(400px,96vw)] min-[780px]:max-h-[56vh] max-w-none object-contain object-bottom drop-shadow-[0_20px_30px_rgba(11,31,58,0.18)] will-change-transform min-[900px]:bottom-0 min-[900px]:right-[95px] min-[900px]:h-[min(74vh,720px)] min-[900px]:max-h-none min-[900px]:w-auto"
             />
           </div>
         </div>

@@ -24,7 +24,7 @@ for (let w = 320; w <= 1600; w += 20) HERO_SWEEP.push(w);
    owner asked for. The button and cells are opaque and the label carries its
    131px at 320 and gone by 540, with the portrait at the reference size the
    own ground, so all three read over her. Name and office stay at zero. */
-const CTA_OVERLAP_BUDGET_PX = 140;
+const CTA_OVERLAP_BUDGET_PX = 200;
 
 const rect = async (loc) => loc.first().boundingBox();
 
@@ -85,25 +85,73 @@ for (const vp of VIEWPORTS) {
   ok(cell, 'name is not hidden under the fixed header', nameLine && header && nameLine.y >= header.y + header.height - 1, { nameY: nameLine?.y, headerBottom: header ? header.y + header.height : null });
   ok(cell, 'portrait is a usable size', portrait && portrait.width >= 100, { portraitW: portrait?.width });
 
-  /* ---- the portrait must match the reference build's sizing rule ----
-     site/index.html: below 900px  width:min(344px,82vw); height:auto
-                      900px and up height:min(74vh,720px); width:auto
-     Sized by width on desktop it reaches 94% of viewport height on a short
-     wide window and her head goes under the header. Sized by height it is
-     stable at 74% everywhere. Asserted, not assumed. */
+  /* ---- the portrait's sizing rule ----
+     Desktop is the reference build's: height:min(74vh,720px), width auto.
+     Sized by width instead it hits 94% of viewport height on a short wide
+     window and her head goes behind the header.
+
+     Phones deliberately EXCEED the reference, on the owner's instruction that
+     the reference size "doesn't work" here: box w-[min(400px,96vw)] against
+     the reference's min(344px,82vw). The height cap is what stops that box
+     growing tall enough to reach the office line, and it tightens above 780px
+     because the name is an uncapped 11vw there and pushes the office down.
+     Painted size ends up 9 to 17 percent larger than the reference. */
   {
     const g = await page.evaluate(() => {
       const img = document.querySelector('img[alt="Maria Muwale"]');
       const r = img.getBoundingClientRect();
-      return { w: r.width, h: r.height, vw: window.innerWidth, vh: window.innerHeight,
-               ar: img.naturalWidth / img.naturalHeight };
+      const ar = img.naturalWidth / img.naturalHeight;
+      const sc = Math.min(r.width / img.naturalWidth, r.height / img.naturalHeight);
+      return { boxW: r.width, boxH: r.height, ar,
+               paintW: img.naturalWidth * sc, paintH: img.naturalHeight * sc,
+               vw: window.innerWidth, vh: window.innerHeight };
     });
-    const wide = g.vw >= 900;
-    const expH = wide ? Math.min(0.74 * g.vh, 720) : Math.min(344, 0.82 * g.vw) / g.ar;
-    const expW = wide ? expH * g.ar : Math.min(344, 0.82 * g.vw);
-    ok(cell, 'portrait width matches the reference rule', Math.abs(g.w - expW) <= 2, { got: Math.round(g.w), want: Math.round(expW) });
-    ok(cell, 'portrait height matches the reference rule', Math.abs(g.h - expH) <= 2, { got: Math.round(g.h), want: Math.round(expH) });
-    ok(cell, 'portrait is never taller than 80% of the viewport', g.h <= g.vh * 0.8, { pct: Math.round(g.h / g.vh * 100) });
+    let expH;
+    if (g.vw >= 900) {
+      expH = Math.min(0.74 * g.vh, 720);
+    } else {
+      const boxW = Math.min(400, 0.96 * g.vw);
+      const cap = (g.vw >= 780 ? 0.56 : 0.60) * g.vh;
+      expH = Math.min(boxW / g.ar, cap);
+    }
+    ok(cell, 'portrait height matches its sizing rule', Math.abs(g.paintH - expH) <= 2,
+      { got: Math.round(g.paintH), want: Math.round(expH) });
+    ok(cell, 'portrait width follows from its height', Math.abs(g.paintW - expH * g.ar) <= 2,
+      { got: Math.round(g.paintW) });
+    ok(cell, 'portrait is never taller than 80% of the viewport', g.paintH <= g.vh * 0.8,
+      { pct: Math.round(g.paintH / g.vh * 100) });
+
+    /* With the enlarged portrait the bottom-left block sits ON the photograph
+       at phone widths. That is fine only while every part of it carries its
+       own opaque ground: a transparent label over her jacket is unreadable,
+       which is exactly the defect the ivory chip was added to fix. */
+    const opaque = await page.evaluate(() => {
+      /* Tailwind 4 emits modern colour syntax, so a background can arrive as
+         oklab(L a b / 0.85) rather than rgba(). Read the alpha out of either. */
+      const alpha = (el) => {
+        const bg = getComputedStyle(el).backgroundColor;
+        if (!bg || bg === 'transparent') return 0;
+        const slash = bg.match(/\/\s*([\d.]+%?)\s*\)/);
+        if (slash) return slash[1].endsWith('%') ? parseFloat(slash[1]) / 100 : parseFloat(slash[1]);
+        const legacy = bg.match(/rgba\(([^)]+)\)/);
+        if (legacy) {
+          const parts = legacy[1].split(',').map((n) => parseFloat(n));
+          return parts.length < 4 ? 1 : parts[3];
+        }
+        return 1;
+      };
+      const btn = document.querySelector('section a[href="/manifesto"]');
+      const cellEl = [...document.querySelectorAll('b')].find((b) => /^\d\d$/.test(b.textContent.trim()));
+      const labelEl = [...document.querySelectorAll('p')].find((p) => /Vote 11 September/i.test(p.textContent));
+      return {
+        button: btn ? alpha(btn) : null,
+        cell: cellEl ? alpha(cellEl.parentElement) : null,
+        label: labelEl ? alpha(labelEl) : null,
+      };
+    });
+    ok(cell, 'the button has an opaque ground', opaque.button >= 0.8, opaque.button);
+    ok(cell, 'the countdown cells have an opaque ground', opaque.cell >= 0.8, opaque.cell);
+    ok(cell, 'the countdown label has its own ground', opaque.label >= 0.8, opaque.label);
   }
 
   /* ---- her name must never be cut off by its wrapper ---- */
