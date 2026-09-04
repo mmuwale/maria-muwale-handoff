@@ -2,10 +2,17 @@ import { pillars, pillarsIntro } from "@/modules/campaign/data/simulation-block"
 import { PillarCard } from "./PillarCard";
 import { playfair } from "./playfair";
 
-/** Ported from maria_website_simulation.html's .manifesto section. */
+/**
+ * Ported from maria_website_simulation.html's .manifesto section.
+ *
+ * overflow-hidden on the section: the reveal-left/reveal-right cards start at
+ * translateX(-44px)/translateX(44px), which on a phone pushes them ~18px past
+ * the viewport and gives the whole page a horizontal scrollbar. Clipping here
+ * contains the pre-animation offset without changing the motion.
+ */
 export function PillarsSection() {
   return (
-    <section id="manifesto" className="bg-white px-[7vw] py-20">
+    <section id="manifesto" className="overflow-hidden bg-white px-[7vw] py-20">
       <div className="mx-auto mb-[45px] max-w-[820px] text-center">
         <div className="text-[13px] font-bold uppercase tracking-[0.16em] text-[#d98f96]">
           {pillarsIntro.eyebrow}
