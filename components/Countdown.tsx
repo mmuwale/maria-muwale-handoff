@@ -13,8 +13,8 @@ const cellStyles = {
 };
 
 const labelStyles = {
-  light: "text-navy/60",
-  dark: "text-ivory/60",
+  light: "text-navy/70 bg-ivory/85",
+  dark: "text-ivory/70 bg-navy/70",
 };
 
 /**
@@ -50,7 +50,7 @@ export function Countdown({ theme = "light" }: { theme?: "light" | "dark" }) {
         <div className={`rounded-2xl px-5 py-3 text-center text-2xl font-bold ${cell}`}>
           Now
         </div>
-        <p className={`text-[10px] uppercase tracking-[0.1em] min-[900px]:text-[11px] ${label}`}>{state.label}</p>
+        <p className={`rounded px-1.5 py-0.5 text-[10px] uppercase tracking-[0.1em] min-[900px]:text-[11px] ${label}`}>{state.label}</p>
       </div>
     );
   }
@@ -74,7 +74,7 @@ export function Countdown({ theme = "light" }: { theme?: "light" | "dark" }) {
           </div>
         ))}
       </div>
-      <p className={`text-[10px] uppercase tracking-[0.1em] min-[900px]:text-[11px] ${label}`}>{state.label}</p>
+      <p className={`rounded px-1.5 py-0.5 text-[10px] uppercase tracking-[0.1em] min-[900px]:text-[11px] ${label}`}>{state.label}</p>
     </div>
   );
 }

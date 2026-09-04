@@ -122,7 +122,7 @@ export function Opener() {
           <div className="absolute inset-x-8 bottom-14 top-[76px] z-0 min-[900px]:relative min-[900px]:inset-auto min-[900px]:h-full min-[900px]:min-h-0">
             <div
               ref={circleRef}
-              className="absolute right-[-70px] bottom-[4%] z-0 h-[min(200px,48%)] w-[min(200px,50vw)] rounded-full bg-blush-w will-change-transform min-[900px]:right-[-60px] min-[900px]:top-1/2 min-[900px]:h-[620px] min-[900px]:w-[620px] min-[900px]:-translate-y-1/2 lg:h-[760px] lg:w-[760px]"
+              className="absolute right-[-96px] bottom-[6%] z-0 h-[min(300px,54%)] w-[min(300px,72vw)] rounded-full bg-blush-w will-change-transform min-[900px]:right-[-60px] min-[900px]:top-1/2 min-[900px]:h-[620px] min-[900px]:w-[620px] min-[900px]:-translate-y-1/2 lg:h-[760px] lg:w-[760px]"
             />
             <Image
               ref={portraitRef}
@@ -131,7 +131,7 @@ export function Opener() {
               width={460}
               height={664}
               priority
-              className="absolute bottom-[-40px] right-[-40px] z-10 h-auto max-h-[42vh] w-[min(238px,50vw)] max-w-none object-contain object-bottom drop-shadow-[0_20px_30px_rgba(11,31,58,0.18)] will-change-transform min-[900px]:bottom-0 min-[900px]:right-[95px] min-[900px]:max-h-none min-[900px]:w-[min(520px,42vw)]"
+              className="absolute bottom-[-40px] right-[-50px] z-10 h-auto max-h-[58vh] w-[min(344px,82vw)] max-w-none object-contain object-bottom drop-shadow-[0_20px_30px_rgba(11,31,58,0.18)] will-change-transform min-[900px]:bottom-0 min-[900px]:right-[95px] min-[900px]:max-h-none min-[900px]:w-[min(520px,42vw)]"
             />
           </div>
         </div>

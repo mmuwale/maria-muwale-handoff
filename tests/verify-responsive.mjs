@@ -20,11 +20,11 @@ const VIEWPORTS = [
 const HERO_SWEEP = [];
 for (let w = 320; w <= 1600; w += 20) HERO_SWEEP.push(w);
 
-/* The owner accepted a little overlap between the bottom-left button and the
-   portrait on the narrowest phones rather than shrink either further. It is
-   38px at 320 and gone by 400. This is the budget, not an aspiration: the name
-   and the office line must never touch the portrait at any width. */
-const CTA_OVERLAP_BUDGET_PX = 45;
+/* The owner accepted overlap between the bottom-left block and the
+   owner asked for. The button and cells are opaque and the label carries its
+   131px at 320 and gone by 540, with the portrait at the reference size the
+   own ground, so all three read over her. Name and office stay at zero. */
+const CTA_OVERLAP_BUDGET_PX = 140;
 
 const rect = async (loc) => loc.first().boundingBox();
 
