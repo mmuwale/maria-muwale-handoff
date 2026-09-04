@@ -63,8 +63,8 @@ export function Opener() {
             equal default tracks the text row overflows its track and collides
             with the portrait. grid-rows-[auto_minmax(0,1fr)] lets the text take
             what it needs and gives the portrait whatever is left. */}
-        <div className="relative z-10 grid h-full grid-cols-1 grid-rows-[auto_minmax(0,1fr)] gap-4 px-8 pb-6 pt-[76px] sm:grid-cols-2 sm:grid-rows-none sm:gap-16 sm:px-16 sm:pb-14 sm:pt-14 lg:px-24">
-          <div className="relative z-20 flex min-w-0 flex-col gap-6 sm:h-full sm:justify-between sm:gap-10">
+        <div className="relative z-10 grid h-full grid-cols-1 gap-4 px-8 pb-14 pt-[76px] sm:grid-cols-2 sm:gap-16 sm:px-16 sm:pb-14 sm:pt-14 lg:px-24">
+          <div className="z-20 flex min-w-0 flex-col gap-6 sm:h-full sm:justify-between sm:gap-10">
             <div ref={nameGroupRef} className="mt-2 will-change-transform sm:mt-10">
               {/* Her name is the page's h1. The campaign page previously had no
                   h1 at all, so the whole heading outline started at h2. This is
@@ -110,22 +110,18 @@ export function Opener() {
                 >
                   Explore my vision
                 </Link>
-                <Link
-                  href="#vote"
-                  className="rounded-full border border-navy px-5 py-3 text-sm font-bold text-navy transition-colors hover:bg-navy/5"
-                >
-                  Meet Maria
-                </Link>
               </div>
 
-              <Countdown theme="light" />
+              <div className="absolute bottom-[54px] left-8 w-[min(272px,72vw)] sm:static sm:w-auto">
+                <Countdown theme="light" />
+              </div>
             </div>
           </div>
 
-          <div className="relative z-0 h-full min-h-0">
+          <div className="absolute inset-x-8 bottom-14 top-[76px] z-0 sm:relative sm:inset-auto sm:h-full sm:min-h-0">
             <div
               ref={circleRef}
-              className="absolute right-[-110px] top-0 z-0 h-[min(300px,100%)] w-[min(300px,78vw)] rounded-full bg-blush-w will-change-transform sm:right-[-60px] sm:top-1/2 sm:h-[620px] sm:w-[620px] sm:-translate-y-1/2 lg:h-[760px] lg:w-[760px]"
+              className="absolute right-[-84px] bottom-[4%] z-0 h-[min(210px,50%)] w-[min(210px,56vw)] rounded-full bg-blush-w will-change-transform sm:right-[-60px] sm:top-1/2 sm:h-[620px] sm:w-[620px] sm:-translate-y-1/2 lg:h-[760px] lg:w-[760px]"
             />
             <Image
               ref={portraitRef}
@@ -134,7 +130,7 @@ export function Opener() {
               width={460}
               height={664}
               priority
-              className="absolute bottom-0 right-[-24px] z-10 h-full max-h-full min-h-[150px] w-auto max-w-none object-contain object-bottom drop-shadow-[0_20px_30px_rgba(11,31,58,0.18)] will-change-transform sm:right-[95px] sm:h-auto sm:max-h-none sm:w-[min(520px,42vw)]"
+              className="absolute bottom-[-40px] right-[-22px] z-10 h-auto max-h-[42vh] w-[min(238px,56vw)] max-w-none object-contain object-bottom drop-shadow-[0_20px_30px_rgba(11,31,58,0.18)] will-change-transform sm:bottom-0 sm:right-[95px] sm:max-h-none sm:w-[min(520px,42vw)]"
             />
           </div>
         </div>

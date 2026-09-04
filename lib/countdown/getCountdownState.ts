@@ -48,6 +48,6 @@ export function getCountdownState(now: Date): CountdownState {
     hours,
     minutes,
     seconds,
-    label: "Vote 11 September · 9:00 am - noon",
+    label: "Vote 11 September · 9:00 am",
   };
 }

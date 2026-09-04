@@ -46,7 +46,7 @@ export function Countdown({ theme = "light" }: { theme?: "light" | "dark" }) {
 
   if (state.phase !== "before") {
     return (
-      <div className="flex flex-col items-center gap-2">
+      <div className="flex flex-col items-start min-[900px]:items-center gap-2">
         <div className={`rounded-2xl px-5 py-3 text-center text-2xl font-bold ${cell}`}>
           Now
         </div>
@@ -63,8 +63,8 @@ export function Countdown({ theme = "light" }: { theme?: "light" | "dark" }) {
   ];
 
   return (
-    <div className="flex flex-col items-center gap-2">
-      <div className="flex flex-nowrap justify-center gap-1.5 min-[900px]:flex-wrap min-[900px]:gap-2.5">
+    <div className="flex flex-col items-start min-[900px]:items-center gap-2">
+      <div className="flex w-full flex-nowrap justify-start gap-1.5 min-[900px]:flex-wrap min-[900px]:justify-center min-[900px]:gap-2.5">
         {cells.map(([cellLabel, value]) => (
           <div key={cellLabel} className={`min-w-0 flex-1 rounded-2xl px-2 py-2.5 text-center min-[900px]:min-w-[78px] min-[900px]:flex-none min-[900px]:px-4 min-[900px]:py-3 ${cell}`}>
             <b className="block text-[20px] leading-none min-[900px]:text-[25px]">{pad(value)}</b>

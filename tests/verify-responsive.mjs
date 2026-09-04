@@ -66,6 +66,7 @@ for (const vp of VIEWPORTS) {
   const portrait = await paintedRect(page, 'img[alt="Maria Muwale"]');
   const officeLine = await rect(page.locator('text=Female Academic Representative').first());
   const cta = await rect(page.locator('a', { hasText: 'Explore my vision' }));
+  ok(cell, 'the Meet Maria button is gone', await page.locator('a', { hasText: 'Meet Maria' }).count() === 0, await page.locator('a', { hasText: 'Meet Maria' }).count());
   const header = await rect(page.locator('header'));
   const nameLine = await rect(page.locator('.op-writeon'));
 
@@ -76,6 +77,20 @@ for (const vp of VIEWPORTS) {
   ok(cell, 'primary CTA does not overlap the portrait', !overlap(cta, portrait), { cta });
   ok(cell, 'name is not hidden under the fixed header', nameLine && header && nameLine.y >= header.y + header.height - 1, { nameY: nameLine?.y, headerBottom: header ? header.y + header.height : null });
   ok(cell, 'portrait is a usable size', portrait && portrait.width >= 100, { portraitW: portrait?.width });
+
+  /* ---- the countdown sits at the foot of the hero, and says 9:00 am ---- */
+  {
+    const hero = page.locator('section').first();
+    const label = hero.locator('text=/Vote 11 September/').first();
+    const lr = await rect(label);
+    const heroBox = await rect(hero);
+    ok(cell, 'countdown label is inside the hero', !!lr, lr);
+    ok(cell, 'countdown sits in the lower half of the hero',
+      !!lr && !!heroBox && lr.y > heroBox.y + Math.min(heroBox.height, vp.height) * 0.5,
+      { labelY: lr && Math.round(lr.y), viewport: vp.height });
+    const txt = lr ? await label.innerText() : '';
+    ok(cell, 'countdown label drops the noon clause', /9:00\s*am\s*$/i.test(txt.trim()), txt.trim());
+  }
 
   /* ---- countdown fits on one row ---- */
   const cdCells = await page.locator('b').filter({ hasText: /^\d\d$/ }).all();
@@ -151,7 +166,6 @@ for (const vp of VIEWPORTS) {
       office: await rect(page.locator('text=Female Academic Representative').first()),
       institution: await rect(page.locator('text=Strathmore University').first()),
       cta: await rect(page.locator('a', { hasText: 'Explore my vision' })),
-      cta2: await rect(page.locator('a', { hasText: 'Meet Maria' })),
     };
     const hit = Object.entries(parts).filter(([, r]) => overlap(r, portraitR)).map(([k]) => k);
     /* Only meaningful below the sm breakpoint. At 640 and up the layout is two

@@ -8,9 +8,9 @@ import { ShareButton } from "./ShareButton";
  * askRight: acts + contacts) plus .askTail (spark rule, closer,
  * hashtag) and .baseline - site/index.html lines 215-243, 291-308.
  *
- * The countdown lives in the opener, not here, at the client's request. The
- * reference build puts it in this beat, so that is a deliberate divergence,
- * and it is why this column starts with the actions.
+ * No countdown in this column. The reference build puts one here, but on this
+ * site it lives at the foot of the hero instead, on the owner's instruction.
+ * Do not "restore" it here or the page will carry two.
  */
 export function Ask() {
   return (
