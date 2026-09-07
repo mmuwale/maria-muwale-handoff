@@ -3,22 +3,31 @@ import { drizzle } from "drizzle-orm/libsql";
 import * as schema from "./schema";
 
 /**
- * Turso connections from this network occasionally fail outright before a
- * response ever comes back - Node's fetch throws `TypeError: fetch failed`
- * (wrapping an ETIMEDOUT/ENETUNREACH AggregateError from IPv4/IPv6
- * happy-eyeballs both failing). Not a Turso outage - a plain retry a moment
+ * Turso connections occasionally fail outright before a response ever comes
+ * back - both locally (Node's fetch throws `TypeError: fetch failed`,
+ * wrapping an ETIMEDOUT/ENETUNREACH AggregateError from IPv4/IPv6
+ * happy-eyeballs both failing) and, it turns out, from Vercel's serverless
+ * runtime too (same underlying undici, but a cold start can surface the
+ * failure as a bare AggregateError/connection error instead of always
+ * wrapped in that exact TypeError). Not a Turso outage - a retry a moment
  * later has always succeeded when this has been observed. A request that
  * reached the server and got a real HTTP response, even an error one, isn't
  * touched here - only a fetch() that never came back at all.
  */
+function isNetworkFailure(err: unknown): boolean {
+  if (err instanceof TypeError && err.message === "fetch failed") return true;
+  if (typeof AggregateError !== "undefined" && err instanceof AggregateError) return true;
+  const code = (err as { cause?: { code?: string }; code?: string })?.cause?.code ?? (err as { code?: string })?.code;
+  return typeof code === "string" && /^E(TIMEDOUT|CONNRESET|CONNREFUSED|NETUNREACH|AI_AGAIN)$/.test(code);
+}
+
 async function fetchWithRetry(...args: Parameters<typeof fetch>): Promise<Response> {
-  const attempts = 3;
+  const attempts = 5;
   for (let attempt = 1; attempt <= attempts; attempt++) {
     try {
       return await fetch(...args);
     } catch (err) {
-      const isNetworkFailure = err instanceof TypeError && err.message === "fetch failed";
-      if (!isNetworkFailure || attempt === attempts) throw err;
+      if (!isNetworkFailure(err) || attempt === attempts) throw err;
       await new Promise((resolve) => setTimeout(resolve, attempt * 300));
     }
   }
