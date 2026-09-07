@@ -20,7 +20,9 @@ export function AdminShell({ user, children }: { user: CurrentUser; children: Re
           )}
         </div>
         <div className="flex items-center gap-4">
-          <span className="text-sm text-navy/60">{user.name}</span>
+          <Link href="/admin/account" className="text-sm text-navy/60 hover:text-navy">
+            {user.name}
+          </Link>
           <LogoutButton />
         </div>
       </nav>

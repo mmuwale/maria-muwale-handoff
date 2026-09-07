@@ -12,3 +12,9 @@ export const createAdminSchema = z.object({
   password: z.string().min(8, "At least 8 characters."),
 });
 export type CreateAdminInput = z.infer<typeof createAdminSchema>;
+
+export const changePasswordSchema = z.object({
+  currentPassword: z.string().min(1),
+  newPassword: z.string().min(8, "At least 8 characters."),
+});
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;

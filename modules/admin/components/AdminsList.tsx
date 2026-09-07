@@ -1,6 +1,15 @@
 import type { listAdmins } from "@/services/admins/listAdmins";
+import { DeleteAdminButton } from "./DeleteAdminButton";
 
-export function AdminsList({ admins }: { admins: Awaited<ReturnType<typeof listAdmins>> }) {
+export function AdminsList({
+  admins,
+  currentUserId,
+  canDelete,
+}: {
+  admins: Awaited<ReturnType<typeof listAdmins>>;
+  currentUserId: string;
+  canDelete: boolean;
+}) {
   return (
     <div className="overflow-x-auto rounded-2xl border border-navy/10 bg-white">
       <table className="min-w-full text-left text-sm">
@@ -10,6 +19,7 @@ export function AdminsList({ admins }: { admins: Awaited<ReturnType<typeof listA
             <th className="px-4 py-3 font-semibold text-navy/60">Email</th>
             <th className="px-4 py-3 font-semibold text-navy/60">Role</th>
             <th className="px-4 py-3 font-semibold text-navy/60">Status</th>
+            {canDelete && <th className="px-4 py-3" />}
           </tr>
         </thead>
         <tbody>
@@ -25,6 +35,13 @@ export function AdminsList({ admins }: { admins: Awaited<ReturnType<typeof listA
                   <span className="text-blush-i">Disabled</span>
                 )}
               </td>
+              {canDelete && (
+                <td className="px-4 py-3 text-right">
+                  {admin.id !== currentUserId && (
+                    <DeleteAdminButton userId={admin.id} name={admin.name} />
+                  )}
+                </td>
+              )}
             </tr>
           ))}
         </tbody>

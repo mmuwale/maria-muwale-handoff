@@ -5,6 +5,7 @@ import { createForm } from "@/services/forms/createForm";
 import { listFormsForUser } from "@/services/forms/listFormsForUser";
 import { getFormWithResponses } from "@/services/forms/getFormWithResponses";
 import { publishForm } from "@/services/forms/publishForm";
+import { closeForm } from "@/services/forms/closeForm";
 
 export const adminFormsRouter = createTRPCRouter({
   create: permissionProcedure("forms.create")
@@ -20,4 +21,8 @@ export const adminFormsRouter = createTRPCRouter({
   publish: permissionProcedure("forms.publish")
     .input(z.object({ formId: z.string().min(1) }))
     .mutation(({ ctx, input }) => publishForm(ctx.db, input.formId, ctx.user)),
+
+  close: permissionProcedure("forms.publish")
+    .input(z.object({ formId: z.string().min(1) }))
+    .mutation(({ ctx, input }) => closeForm(ctx.db, input.formId, ctx.user)),
 });

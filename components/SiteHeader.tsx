@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { FEEDBACK_FORM_SLUG } from "@/modules/shared/data/feedback-form";
 
 /**
  * The fixed top nav for every public page - home, manifesto, the feedback
@@ -29,7 +28,7 @@ export function SiteHeader() {
           Vote
         </Link>
         <Link
-          href={`/forms/${FEEDBACK_FORM_SLUG}`}
+          href="/forms"
           className="whitespace-nowrap rounded-full bg-navy px-3 py-2 text-[10px] font-bold uppercase tracking-[0.06em] text-ivory transition-colors hover:bg-navy-d sm:px-4 sm:text-xs sm:tracking-[0.1em]"
         >
           Submit Feedback

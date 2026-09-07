@@ -51,20 +51,47 @@ async function seedRoles(permissionIdByName: Map<string, string>) {
   return roleIdByName;
 }
 
-async function seedSuperAdmin(roleIdByName: Map<string, string>) {
-  const email = process.env.SEED_SUPER_ADMIN_EMAIL ?? "admin@maria-muwale.local";
-  const password = process.env.SEED_SUPER_ADMIN_PASSWORD ?? "change-this-password-123";
+const SUPER_ADMIN_SEEDS = [
+  {
+    name: "Super Admin",
+    email: process.env.SEED_SUPER_ADMIN_EMAIL_1 ?? "dr.muranja@gmail.com",
+    password: process.env.SEED_SUPER_ADMIN_PASSWORD_1 ?? "change-this-password-123",
+  },
+  {
+    name: "Super Admin 2",
+    email: process.env.SEED_SUPER_ADMIN_EMAIL_2 ?? "maria.muwale@strathmore.edu",
+    password: process.env.SEED_SUPER_ADMIN_PASSWORD_2 ?? "change-this-password-456",
+  },
+  {
+    name: "Super Admin 3",
+    email: process.env.SEED_SUPER_ADMIN_EMAIL_3 ?? "moses.muranja@strathmore.edu",
+    password: process.env.SEED_SUPER_ADMIN_PASSWORD_3 ?? "change-this-password-789",
+  },
+] as const;
 
+async function seedSuperAdmin(
+  roleIdByName: Map<string, string>,
+  { name, email, password }: { name: string; email: string; password: string },
+) {
   const existing = await db.query.users.findFirst({ where: eq(users.email, email) });
   if (existing) return existing;
 
   const passwordHash = await hashPassword(password);
-  const [admin] = await db.insert(users).values({ name: "Super Admin", email, passwordHash }).returning();
+  const [admin] = await db.insert(users).values({ name, email, passwordHash }).returning();
 
   await db.insert(userRoles).values({ userId: admin.id, roleId: roleIdByName.get("super_admin")! });
 
   console.log(`Seeded super_admin: ${email} / ${password} (change this password)`);
   return admin;
+}
+
+async function seedSuperAdmins(roleIdByName: Map<string, string>) {
+  const admins = [];
+  for (const seed of SUPER_ADMIN_SEEDS) {
+    if (!seed.email) continue;
+    admins.push(await seedSuperAdmin(roleIdByName, seed));
+  }
+  return admins;
 }
 
 async function seedDemoForm(createdBy: string) {
@@ -127,8 +154,8 @@ async function seedDemoForm(createdBy: string) {
 async function seed() {
   const permissionIdByName = await seedPermissions();
   const roleIdByName = await seedRoles(permissionIdByName);
-  const superAdmin = await seedSuperAdmin(roleIdByName);
-  await seedDemoForm(superAdmin.id);
+  const [firstAdmin] = await seedSuperAdmins(roleIdByName);
+  await seedDemoForm(firstAdmin.id);
 }
 
 seed();

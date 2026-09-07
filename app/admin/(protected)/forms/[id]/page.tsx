@@ -16,7 +16,7 @@ export default async function FormResponsesPage({ params }: Props) {
     <div>
       <div className="mb-2 flex items-center justify-between">
         <h1 className="font-serif text-3xl font-semibold text-navy">{form.title}</h1>
-        {form.status === "draft" && <PublishButton formId={form.id} />}
+        <PublishButton formId={form.id} status={form.status} />
       </div>
       <p className="mb-6 text-navy/50">
         /forms/{form.slug} &middot; {responses.length} response

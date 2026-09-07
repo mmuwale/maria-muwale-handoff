@@ -24,8 +24,11 @@ export function Footer() {
         </Link>
       </div>
 
-      <footer className="mt-16 border-t border-ivory/15 pt-6 text-[11px] tracking-[0.08em] text-ivory/60">
-        {footerContent.bar}
+      <footer className="mt-16 flex flex-col items-center gap-3 border-t border-ivory/15 pt-6 text-[11px] tracking-[0.08em] text-ivory/60">
+        <span>{footerContent.bar}</span>
+        <Link href="/admin" className="uppercase tracking-[0.14em] text-ivory/40 hover:text-ivory/70">
+          Admin
+        </Link>
       </footer>
     </section>
   );

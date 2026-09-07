@@ -18,7 +18,11 @@ export default async function AdminsPage() {
     <div className="flex flex-col gap-8">
       <h1 className="font-serif text-3xl font-semibold text-navy">Admins</h1>
       {user.permissions.has("admins.create") && <CreateAdminForm />}
-      <AdminsList admins={admins} />
+      <AdminsList
+        admins={admins}
+        currentUserId={user.id}
+        canDelete={user.permissions.has("admins.delete")}
+      />
     </div>
   );
 }
