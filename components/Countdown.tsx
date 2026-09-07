@@ -60,21 +60,27 @@ export function Countdown({ theme = "light" }: { theme?: "light" | "dark" }) {
      beat 6 and on the manifesto. The voting and results states above KEEP
      their label, because "Polls are open" and "Results at 1:30 pm" are the
      only thing explaining a countdown that has stopped counting. */
-  const cells: Array<[string, number]> = [
-    ["Days", state.days],
-    ["Hours", state.hours],
-    ["Minutes", state.minutes],
-    ["Seconds", state.seconds],
+  /* Short form for the four equal-width mobile cells (flex-1 with a 0%
+     basis splits the row evenly regardless of each label's own content
+     width, so "Minutes"/"Seconds" - wider than "Days"/"Hours" - spilled
+     past their cell's edges at narrow widths). From 900px the cells are
+     fixed-width and roomy enough for the full word. */
+  const cells: Array<[string, string, number]> = [
+    ["Day", "Days", state.days],
+    ["Hr", "Hours", state.hours],
+    ["Min", "Minutes", state.minutes],
+    ["Sec", "Seconds", state.seconds],
   ];
 
   return (
     <div className="flex flex-col items-center gap-2">
       <div className="flex flex-nowrap justify-center gap-1.5 min-[900px]:gap-2">
-        {cells.map(([cellLabel, value]) => (
-          <div key={cellLabel} className={`min-w-0 flex-1 rounded-xl px-1 py-1.5 text-center min-[900px]:min-w-[60px] min-[900px]:flex-none min-[900px]:px-2.5 min-[900px]:py-2 ${cell}`}>
+        {cells.map(([short, long, value]) => (
+          <div key={long} className={`min-w-0 flex-1 rounded-xl px-1 py-1.5 text-center min-[900px]:min-w-[60px] min-[900px]:flex-none min-[900px]:px-2.5 min-[900px]:py-2 ${cell}`}>
             <b className="block text-[15px] leading-none min-[900px]:text-[19px]">{pad(value)}</b>
-            <small className={`text-[8px] uppercase tracking-[0.06em] min-[900px]:text-[9px] min-[900px]:tracking-[0.1em] ${label}`}>
-              {cellLabel}
+            <small className={`whitespace-nowrap text-[8px] uppercase tracking-[0.02em] min-[900px]:text-[9px] min-[900px]:tracking-[0.1em] ${label}`}>
+              <span className="min-[900px]:hidden">{short}</span>
+              <span className="hidden min-[900px]:inline">{long}</span>
             </small>
           </div>
         ))}
