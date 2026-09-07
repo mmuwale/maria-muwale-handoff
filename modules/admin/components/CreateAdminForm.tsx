@@ -8,20 +8,25 @@ export function CreateAdminForm() {
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [notice, setNotice] = useState<string | null>(null);
 
   const create = trpc.admins.create.useMutation({
-    onSuccess: () => {
+    onSuccess: (admin) => {
       setName("");
       setEmail("");
-      setPassword("");
+      setNotice(
+        admin.emailSent
+          ? `Invite sent to ${admin.email}.`
+          : `${admin.name} was created, but the invite email failed to send. They'll need it resent.`,
+      );
       router.refresh();
     },
   });
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    create.mutate({ name, email, password });
+    setNotice(null);
+    create.mutate({ name, email });
   }
 
   return (
@@ -45,25 +50,15 @@ export function CreateAdminForm() {
           className="rounded-xl border border-navy/15 bg-white px-3 py-2 text-navy outline-none focus:border-gold"
         />
       </div>
-      <div>
-        <label className="mb-1 block text-xs font-medium text-navy/60">Password</label>
-        <input
-          type="password"
-          required
-          minLength={8}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="rounded-xl border border-navy/15 bg-white px-3 py-2 text-navy outline-none focus:border-gold"
-        />
-      </div>
       <button
         type="submit"
         disabled={create.isPending}
         className="rounded-full bg-navy px-5 py-2.5 text-sm font-bold text-ivory hover:bg-navy-d disabled:opacity-60"
       >
-        {create.isPending ? "Creating..." : "Add feedback admin"}
+        {create.isPending ? "Sending invite..." : "Invite feedback admin"}
       </button>
       {create.error && <p className="w-full text-sm text-blush-i">{create.error.message}</p>}
+      {notice && <p className="w-full text-sm text-gold-d">{notice}</p>}
     </form>
   );
 }

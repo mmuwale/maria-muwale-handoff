@@ -4,6 +4,7 @@ import { responsesRouter } from "./routers/responses.router";
 import { authRouter } from "./routers/auth.router";
 import { adminFormsRouter } from "./routers/admin-forms.router";
 import { adminsRouter } from "./routers/admins.router";
+import { invitesRouter } from "./routers/invites.router";
 
 export const appRouter = createTRPCRouter({
   forms: formsRouter,
@@ -11,6 +12,7 @@ export const appRouter = createTRPCRouter({
   auth: authRouter,
   adminForms: adminFormsRouter,
   admins: adminsRouter,
+  invites: invitesRouter,
 });
 
 export type AppRouter = typeof appRouter;

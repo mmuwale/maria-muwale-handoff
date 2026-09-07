@@ -9,9 +9,14 @@ export type LoginInput = z.infer<typeof loginSchema>;
 export const createAdminSchema = z.object({
   name: z.string().min(1),
   email: z.string().email(),
-  password: z.string().min(8, "At least 8 characters."),
 });
 export type CreateAdminInput = z.infer<typeof createAdminSchema>;
+
+export const acceptInviteSchema = z.object({
+  token: z.string().min(1),
+  password: z.string().min(8, "At least 8 characters."),
+});
+export type AcceptInviteInput = z.infer<typeof acceptInviteSchema>;
 
 export const changePasswordSchema = z
   .object({

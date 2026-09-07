@@ -12,12 +12,18 @@ import { formResponses } from "./form-responses";
 import { responseAnswers } from "./response-answers";
 import { formReviewers } from "./form-reviewers";
 import { sessions } from "./sessions";
+import { invites } from "./invites";
 
 export const usersRelations = relations(users, ({ many }) => ({
   formsCreated: many(forms),
   userRoles: many(userRoles),
   reviewingForms: many(formReviewers),
   sessions: many(sessions),
+  invites: many(invites),
+}));
+
+export const invitesRelations = relations(invites, ({ one }) => ({
+  user: one(users, { fields: [invites.userId], references: [users.id] }),
 }));
 
 export const rolesRelations = relations(roles, ({ many }) => ({

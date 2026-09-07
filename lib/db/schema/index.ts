@@ -11,4 +11,5 @@ export * from "./form-responses";
 export * from "./response-answers";
 export * from "./form-reviewers";
 export * from "./sessions";
+export * from "./invites";
 export * from "./relations";

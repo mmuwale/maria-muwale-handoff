@@ -29,7 +29,9 @@ export function AdminsList({
               <td className="px-4 py-3 text-navy/70">{admin.email}</td>
               <td className="px-4 py-3 text-navy/70">{admin.roles.join(", ")}</td>
               <td className="px-4 py-3">
-                {admin.isActive ? (
+                {admin.invitePending ? (
+                  <span className="text-navy/50">Invite pending</span>
+                ) : admin.isActive ? (
                   <span className="text-gold-d">Active</span>
                 ) : (
                   <span className="text-blush-i">Disabled</span>

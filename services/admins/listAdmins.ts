@@ -5,7 +5,7 @@ import type { db as Db } from "@/lib/db/client";
 export async function listAdmins(db: typeof Db) {
   const rows = await db.query.users.findMany({
     orderBy: (u, { desc }) => desc(u.createdAt),
-    with: { userRoles: { with: { role: true } } },
+    with: { userRoles: { with: { role: true } }, invites: true },
   });
 
   return rows.map((row) => ({
@@ -15,5 +15,6 @@ export async function listAdmins(db: typeof Db) {
     isActive: row.isActive,
     createdAt: row.createdAt,
     roles: row.userRoles.map((ur) => ur.role.name),
+    invitePending: row.invites.some((invite) => invite.expiresAt.getTime() > Date.now()),
   }));
 }
