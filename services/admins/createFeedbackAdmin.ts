@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { hashPassword } from "@/lib/auth/hashPassword";
 import { sendInviteEmail } from "@/lib/email/sendInviteEmail";
+import { getSiteUrl } from "@/lib/env/getSiteUrl";
 import type { CreateAdminInput } from "@/types/auth.schema";
 
 const INVITE_DURATION_MS = 48 * 60 * 60 * 1000;
@@ -41,6 +42,8 @@ export async function createFeedbackAdmin(db: typeof Db, input: CreateAdminInput
 
   // The account exists either way - if the email fails to send, the caller
   // can see that and offer a resend rather than losing the created admin.
+  // The link itself is always returned so the inviter can copy/share it
+  // directly, regardless of whether the email went out.
   let emailSent = true;
   try {
     await sendInviteEmail({ to: admin.email, name: admin.name, token });
@@ -49,5 +52,7 @@ export async function createFeedbackAdmin(db: typeof Db, input: CreateAdminInput
     emailSent = false;
   }
 
-  return { ...admin, emailSent };
+  const inviteUrl = `${getSiteUrl()}/admin/invite/${token}`;
+
+  return { ...admin, emailSent, inviteUrl };
 }

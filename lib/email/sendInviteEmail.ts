@@ -1,7 +1,8 @@
 import { sendMail } from "./sendMail";
+import { getSiteUrl } from "@/lib/env/getSiteUrl";
 
 export async function sendInviteEmail(input: { to: string; name: string; token: string }) {
-  const url = `${process.env.NEXT_PUBLIC_SITE_URL}/admin/invite/${input.token}`;
+  const url = `${getSiteUrl()}/admin/invite/${input.token}`;
 
   await sendMail({
     to: input.to,
