@@ -9,6 +9,7 @@ export function LogoutButton() {
     // after the session is gone (see the double-logout-click race that hit
     // AdminDashboardPage with a null ctx.user despite the layout's guard).
     onSuccess: () => {
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- deliberate hard navigation, see comment above
       window.location.href = "/admin/login";
     },
   });
