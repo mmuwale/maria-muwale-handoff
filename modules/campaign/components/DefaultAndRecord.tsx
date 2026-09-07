@@ -60,13 +60,20 @@ export function DefaultAndRecord() {
           <p className="max-w-[640px] font-serif text-[29px] font-medium leading-[1.3] text-navy min-[900px]:max-w-[22ch] min-[900px]:text-[clamp(40px,3.4vw,58px)] min-[900px]:leading-[1.22]">
             {defaultBeat.question}
           </p>
-          <div className="mt-11 flex flex-wrap gap-4 min-[900px]:mr-[440px]">
-            {defaultBeat.boxes.map((label) => (
+          {/* Not boxes: the owner flagged the old bordered/hover-invert boxes
+              for reading as buttons. A numbered list instead - the same 01/02
+              motif the four pillars use further down the page, so it reads as
+              "more of this story," not a set of controls. */}
+          <div className="mt-11 flex flex-col border-y border-navy/15 min-[900px]:mr-[440px]">
+            {defaultBeat.items.map((item, i) => (
               <div
-                key={label}
-                className="flex min-w-[180px] flex-1 items-center justify-center border-2 border-navy bg-ivory px-6 py-7 text-center text-base font-semibold uppercase tracking-[0.18em] text-navy transition-colors duration-200 hover:bg-navy hover:text-ivory sm:text-lg"
+                key={item}
+                className={`flex items-baseline gap-4 py-4 ${i > 0 ? "border-t border-navy/15" : ""}`}
               >
-                {label}
+                <span className="font-serif text-sm font-bold tracking-[0.04em] text-gold-d">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span className="text-base font-medium text-navy sm:text-lg">{item}</span>
               </div>
             ))}
           </div>
