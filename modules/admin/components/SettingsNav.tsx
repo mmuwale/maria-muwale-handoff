@@ -14,14 +14,14 @@ export function SettingsNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="mb-8 flex gap-1 border-b border-navy/10">
+    <nav className="mb-8 flex gap-1 overflow-x-auto border-b border-navy/10">
       {TABS.map((tab) => {
         const active = pathname.startsWith(tab.href);
         return (
           <Link
             key={tab.href}
             href={tab.href}
-            className={`px-4 py-2.5 text-sm font-medium transition-colors ${
+            className={`whitespace-nowrap px-4 py-2.5 text-sm font-medium transition-colors ${
               active
                 ? "border-b-2 border-navy text-navy"
                 : "border-b-2 border-transparent text-navy/50 hover:text-navy"

@@ -110,18 +110,18 @@ export function CreateFormForm() {
         <h2 className="font-medium text-navy">Questions</h2>
         {questions.map((q, i) => (
           <div key={i} className="flex flex-col gap-3 rounded-2xl border border-navy/10 bg-white p-4">
-            <div className="flex gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row">
               <input
                 required
                 placeholder="Question text"
                 value={q.question}
                 onChange={(e) => updateQuestion(i, { question: e.target.value })}
-                className="flex-1 rounded-xl border border-navy/15 px-3 py-2 text-navy outline-none focus:border-gold"
+                className="min-w-0 flex-1 rounded-xl border border-navy/15 px-3 py-2 text-navy outline-none focus:border-gold"
               />
               <select
                 value={q.type}
                 onChange={(e) => updateQuestion(i, { type: e.target.value as QuestionType })}
-                className="rounded-xl border border-navy/15 px-3 py-2 text-navy"
+                className="w-full rounded-xl border border-navy/15 px-3 py-2 text-navy sm:w-auto"
               >
                 {QUESTION_TYPES.map((type) => (
                   <option key={type} value={type}>
