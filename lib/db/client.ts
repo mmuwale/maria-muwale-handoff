@@ -21,13 +21,29 @@ function isNetworkFailure(err: unknown): boolean {
   return typeof code === "string" && /^E(TIMEDOUT|CONNRESET|CONNREFUSED|NETUNREACH|AI_AGAIN)$/.test(code);
 }
 
-async function fetchWithRetry(...args: Parameters<typeof fetch>): Promise<Response> {
+const ATTEMPT_TIMEOUT_MS = 6000;
+
+/**
+ * A dead connection attempt (ETIMEDOUT) can take the OS's default TCP
+ * connect timeout - tens of seconds - to actually reject, which would make
+ * "retry a few times" itself hang for ages before ever getting to try
+ * again. Race every attempt against its own short timeout so a stuck
+ * attempt fails fast and retries promptly instead.
+ */
+function withAttemptTimeout(init: RequestInit | undefined): RequestInit {
+  const timeoutSignal = AbortSignal.timeout(ATTEMPT_TIMEOUT_MS);
+  const signal = init?.signal ? AbortSignal.any([init.signal, timeoutSignal]) : timeoutSignal;
+  return { ...init, signal };
+}
+
+async function fetchWithRetry(input: Parameters<typeof fetch>[0], init?: RequestInit): Promise<Response> {
   const attempts = 5;
   for (let attempt = 1; attempt <= attempts; attempt++) {
     try {
-      return await fetch(...args);
+      return await fetch(input, withAttemptTimeout(init));
     } catch (err) {
-      if (!isNetworkFailure(err) || attempt === attempts) throw err;
+      const timedOut = err instanceof DOMException && err.name === "TimeoutError";
+      if ((!timedOut && !isNetworkFailure(err)) || attempt === attempts) throw err;
       await new Promise((resolve) => setTimeout(resolve, attempt * 300));
     }
   }

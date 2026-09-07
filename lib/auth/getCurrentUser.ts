@@ -10,6 +10,7 @@ export type CurrentUser = {
   id: string;
   name: string;
   email: string;
+  language: string;
   permissions: Set<string>;
 };
 
@@ -38,5 +39,5 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
 
   const permissions = await getPermissionsForUser(db, user.id);
 
-  return { id: user.id, name: user.name, email: user.email, permissions };
+  return { id: user.id, name: user.name, email: user.email, language: user.language, permissions };
 });

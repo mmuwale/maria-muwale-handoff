@@ -13,6 +13,9 @@ export const users = sqliteTable("users", {
   email: text("email").notNull().unique(),
   passwordHash: text("password_hash").notNull(),
   isActive: integer("is_active", { mode: "boolean" }).notNull().default(true),
+  /** Stored for when the admin UI is actually translated - not wired to
+   *  anything yet, so changing it has no visible effect today. */
+  language: text("language").notNull().default("en"),
   createdAt: createdAtColumn(),
   updatedAt: updatedAtColumn(),
 });
