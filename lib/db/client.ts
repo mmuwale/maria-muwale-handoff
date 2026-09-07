@@ -40,7 +40,14 @@ async function fetchWithRetry(input: Parameters<typeof fetch>[0], init?: Request
   const attempts = 5;
   for (let attempt = 1; attempt <= attempts; attempt++) {
     try {
-      return await fetch(input, withAttemptTimeout(init));
+      // libsql's http client passes a Request object (with a body) for
+      // POSTs, not a plain URL. A Request's body can only be read once -
+      // retrying with the same (now-consumed) object throws "Cannot
+      // construct a Request with a Request object that has already been
+      // used." Clone it fresh for every attempt instead; the original is
+      // never itself passed to fetch, so it stays clonable throughout.
+      const attemptInput = input instanceof Request ? input.clone() : input;
+      return await fetch(attemptInput, withAttemptTimeout(init));
     } catch (err) {
       const timedOut = err instanceof DOMException && err.name === "TimeoutError";
       if ((!timedOut && !isNetworkFailure(err)) || attempt === attempts) throw err;
