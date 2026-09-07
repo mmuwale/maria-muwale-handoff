@@ -23,7 +23,7 @@ async function seedPermissions() {
     const existing = await db.query.permissions.findFirst({ where: eq(permissions.name, p.name) });
     const row =
       existing ??
-      db.insert(permissions).values({ name: p.name, description: p.description }).returning().get();
+      (await db.insert(permissions).values({ name: p.name, description: p.description }).returning())[0];
     byName.set(p.name, row.id);
   }
   return byName;
@@ -34,7 +34,7 @@ async function seedRoles(permissionIdByName: Map<string, string>) {
 
   for (const roleName of Object.keys(ROLE_PERMISSIONS) as Array<keyof typeof ROLE_PERMISSIONS>) {
     const existing = await db.query.roles.findFirst({ where: eq(roles.name, roleName) });
-    const role = existing ?? db.insert(roles).values({ name: roleName }).returning().get();
+    const role = existing ?? (await db.insert(roles).values({ name: roleName }).returning())[0];
     roleIdByName.set(roleName, role.id);
 
     for (const permissionName of ROLE_PERMISSIONS[roleName]) {
@@ -43,7 +43,7 @@ async function seedRoles(permissionIdByName: Map<string, string>) {
         where: (rp, { and, eq }) => and(eq(rp.roleId, role.id), eq(rp.permissionId, permissionId)),
       });
       if (!already) {
-        db.insert(rolePermissions).values({ roleId: role.id, permissionId }).run();
+        await db.insert(rolePermissions).values({ roleId: role.id, permissionId });
       }
     }
   }
@@ -59,11 +59,9 @@ async function seedSuperAdmin(roleIdByName: Map<string, string>) {
   if (existing) return existing;
 
   const passwordHash = await hashPassword(password);
-  const admin = db.insert(users).values({ name: "Super Admin", email, passwordHash }).returning().get();
+  const [admin] = await db.insert(users).values({ name: "Super Admin", email, passwordHash }).returning();
 
-  db.insert(userRoles)
-    .values({ userId: admin.id, roleId: roleIdByName.get("super_admin")! })
-    .run();
+  await db.insert(userRoles).values({ userId: admin.id, roleId: roleIdByName.get("super_admin")! });
 
   console.log(`Seeded super_admin: ${email} / ${password} (change this password)`);
   return admin;
@@ -75,7 +73,7 @@ async function seedDemoForm(createdBy: string) {
     await db.delete(forms).where(eq(forms.id, existing.id));
   }
 
-  const form = db
+  const [form] = await db
     .insert(forms)
     .values({
       title: "Campaign Feedback",
@@ -85,10 +83,9 @@ async function seedDemoForm(createdBy: string) {
       allowAnonymous: true,
       createdBy,
     })
-    .returning()
-    .get();
+    .returning();
 
-  const pillarQuestion = db
+  const [pillarQuestion] = await db
     .insert(formQuestions)
     .values({
       formId: form.id,
@@ -97,39 +94,32 @@ async function seedDemoForm(createdBy: string) {
       isRequired: true,
       sortOrder: 0,
     })
-    .returning()
-    .get();
+    .returning();
 
-  pillars.forEach((pillar, i) => {
-    db.insert(questionOptions)
-      .values({
-        questionId: pillarQuestion.id,
-        label: pillar.title,
-        value: pillar.title,
-        sortOrder: i,
-      })
-      .run();
+  for (const [i, pillar] of pillars.entries()) {
+    await db.insert(questionOptions).values({
+      questionId: pillarQuestion.id,
+      label: pillar.title,
+      value: pillar.title,
+      sortOrder: i,
+    });
+  }
+
+  await db.insert(formQuestions).values({
+    formId: form.id,
+    type: "rating",
+    question: "How would you rate this campaign page?",
+    isRequired: true,
+    sortOrder: 1,
   });
 
-  db.insert(formQuestions)
-    .values({
-      formId: form.id,
-      type: "rating",
-      question: "How would you rate this campaign page?",
-      isRequired: true,
-      sortOrder: 1,
-    })
-    .run();
-
-  db.insert(formQuestions)
-    .values({
-      formId: form.id,
-      type: "textarea",
-      question: "Any other feedback?",
-      isRequired: false,
-      sortOrder: 2,
-    })
-    .run();
+  await db.insert(formQuestions).values({
+    formId: form.id,
+    type: "textarea",
+    question: "Any other feedback?",
+    isRequired: false,
+    sortOrder: 2,
+  });
 
   console.log(`Seeded form "${form.title}" at /forms/${form.slug}`);
 }

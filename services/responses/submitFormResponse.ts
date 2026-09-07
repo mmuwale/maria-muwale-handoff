@@ -42,29 +42,26 @@ export async function submitFormResponse(db: typeof Db, input: SubmitResponseInp
     }
   }
 
-  return db.transaction((tx) => {
-    const response = tx
+  return db.transaction(async (tx) => {
+    const [response] = await tx
       .insert(formResponses)
       .values({
         formId: input.formId,
         submittedAt: new Date(),
         status: "submitted",
       })
-      .returning()
-      .get();
+      .returning();
 
     for (const answer of input.answers) {
       const value = Array.isArray(answer.value)
         ? JSON.stringify(answer.value)
         : answer.value;
 
-      tx.insert(responseAnswers)
-        .values({
-          responseId: response.id,
-          questionId: answer.questionId,
-          value,
-        })
-        .run();
+      await tx.insert(responseAnswers).values({
+        responseId: response.id,
+        questionId: answer.questionId,
+        value,
+      });
     }
 
     return response;

@@ -21,14 +21,13 @@ export async function createFeedbackAdmin(db: typeof Db, input: CreateAdminInput
 
   const passwordHash = await hashPassword(input.password);
 
-  return db.transaction((tx) => {
-    const user = tx
+  return db.transaction(async (tx) => {
+    const [user] = await tx
       .insert(users)
       .values({ name: input.name, email: input.email, passwordHash })
-      .returning()
-      .get();
+      .returning();
 
-    tx.insert(userRoles).values({ userId: user.id, roleId: role.id }).run();
+    await tx.insert(userRoles).values({ userId: user.id, roleId: role.id });
 
     return { id: user.id, name: user.name, email: user.email };
   });

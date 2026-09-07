@@ -7,11 +7,7 @@ import { SESSION_COOKIE, SESSION_DURATION_MS, sessionCookieOptions } from "./ses
 export async function createSession(db: typeof Db, userId: string) {
   const expiresAt = new Date(Date.now() + SESSION_DURATION_MS);
 
-  const session = await db
-    .insert(sessions)
-    .values({ userId, expiresAt })
-    .returning()
-    .get();
+  const [session] = await db.insert(sessions).values({ userId, expiresAt }).returning();
 
   const cookieStore = await cookies();
   cookieStore.set(SESSION_COOKIE, session.id, {

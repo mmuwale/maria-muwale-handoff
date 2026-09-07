@@ -16,8 +16,8 @@ export async function createForm(db: typeof Db, input: CreateFormInput, createdB
     }
   }
 
-  return db.transaction((tx) => {
-    const form = tx
+  return db.transaction(async (tx) => {
+    const [form] = await tx
       .insert(forms)
       .values({
         title: input.title,
@@ -27,11 +27,10 @@ export async function createForm(db: typeof Db, input: CreateFormInput, createdB
         status: "draft",
         createdBy,
       })
-      .returning()
-      .get();
+      .returning();
 
-    input.questions.forEach((q, sortOrder) => {
-      const question = tx
+    for (const [sortOrder, q] of input.questions.entries()) {
+      const [question] = await tx
         .insert(formQuestions)
         .values({
           formId: form.id,
@@ -41,20 +40,17 @@ export async function createForm(db: typeof Db, input: CreateFormInput, createdB
           isRequired: q.isRequired,
           sortOrder,
         })
-        .returning()
-        .get();
+        .returning();
 
-      q.options?.forEach((option, optionOrder) => {
-        tx.insert(questionOptions)
-          .values({
-            questionId: question.id,
-            label: option.label,
-            value: option.value,
-            sortOrder: optionOrder,
-          })
-          .run();
-      });
-    });
+      for (const [optionOrder, option] of (q.options ?? []).entries()) {
+        await tx.insert(questionOptions).values({
+          questionId: question.id,
+          label: option.label,
+          value: option.value,
+          sortOrder: optionOrder,
+        });
+      }
+    }
 
     return form;
   });

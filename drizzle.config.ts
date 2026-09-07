@@ -1,11 +1,12 @@
 import { defineConfig } from "drizzle-kit";
 
 export default defineConfig({
-  dialect: "sqlite",
+  dialect: "turso",
   schema: "./lib/db/schema/index.ts",
   out: "./drizzle/migrations",
   dbCredentials: {
-    url: process.env.DATABASE_URL ?? "./drizzle/maria-app.db",
+    url: process.env.DATABASE_URL ?? "file:./drizzle/maria-app.db",
+    authToken: process.env.DATABASE_AUTH_TOKEN,
   },
   strict: true,
   verbose: true,

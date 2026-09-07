@@ -11,10 +11,11 @@ export async function publishForm(db: typeof Db, formId: string, user: CurrentUs
 
   await assertFormAccess(db, form, user, "forms.viewAll");
 
-  return db
+  const [updated] = await db
     .update(forms)
     .set({ status: "published", updatedAt: new Date() })
     .where(eq(forms.id, formId))
-    .returning()
-    .get();
+    .returning();
+
+  return updated;
 }
