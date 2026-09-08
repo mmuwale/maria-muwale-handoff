@@ -1,0 +1,203 @@
+/* ── Simulation block: sticky stacking + staggered text entrance ──
+   Palette:
+     --pillar-accent:    #D28380  (Dusty Rose)
+     --pillar-deep:      #231718  (Deep Espresso)
+     --pillar-canvas:    #FAF6F3  (Warm Cream)
+     --pillar-surface:   #FFFFFF  (Linen White)
+     --pillar-tint:      #F7E8E6  (Soft Rose Tint)
+     --pillar-muted:     #7A6F6E  (Warm Taupe Slate)
+*/
+
+/* ─── Sticky stacking (desktop only) ─── */
+
+.pillar-sticky-wrap {
+  position: sticky;
+  top: 10vh;
+  z-index: auto;
+  will-change: transform;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pillar-sticky-wrap:not(.is-active) {
+  transform: scale(0.93);
+  opacity: 0.5;
+  filter: brightness(0.85);
+  pointer-events: none;
+}
+
+.pillar-sticky-wrap.is-active {
+  z-index: 10;
+  transform: scale(1);
+  opacity: 1;
+  filter: none;
+}
+
+/* ─── Card ─── */
+
+.pillar-card {
+  position: relative;
+  border-radius: 22px;
+  background: #0b1f3a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.15),
+    0 8px 24px rgba(0, 0, 0, 0.2),
+    0 20px 48px rgba(0, 0, 0, 0.12);
+  padding: 40px 44px 44px;
+  overflow: hidden;
+}
+
+/* Accent top bar — animates from 0 width to full on active */
+.pillar-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: var(--pillar-accent, #D28380);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.1s;
+  z-index: 1;
+}
+
+.is-active .pillar-card::before {
+  transform: scaleX(1);
+}
+
+/* ─── Staggered text entrance ─── */
+
+.pillar-card .stagger {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--d, 0s);
+}
+
+.pillar-card .stagger-heading {
+  opacity: 0;
+  clip-path: inset(0 100% 0 0);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    clip-path 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--d, 0s);
+}
+
+/* Entered state — trigger the transitions */
+
+.is-active .pillar-card .stagger,
+.entered .pillar-card .stagger {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.is-active .pillar-card .stagger-heading,
+.entered .pillar-card .stagger-heading {
+  opacity: 1;
+  clip-path: inset(0 -10% 0 0);
+}
+
+/* ─── KPI badge ─── */
+
+.pillar-kpi {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pillar-kpi:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(35, 23, 24, 0.06);
+}
+
+/* ─── Category pill ─── */
+
+.pillar-category-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  background: rgba(210, 131, 128, 0.15);
+  padding: 5px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ─── Detail bullet (dusty rose dot) ─── */
+
+.pillar-detail-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--pillar-accent, #D28380);
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+/* ─── Mobile ─── */
+
+@media (max-width: 800px) {
+  .pillar-sticky-wrap {
+    position: relative !important;
+    top: auto !important;
+    z-index: auto !important;
+    transform: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+    pointer-events: auto !important;
+    transition: none !important;
+  }
+
+  .pillar-card {
+    padding: 28px 24px 32px;
+    border-radius: 18px;
+  }
+
+  /* On mobile, just fade in from full opacity — no sticky stacking */
+  .pillar-card .stagger {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  .pillar-card .stagger-heading {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+  }
+
+  .pillar-sticky-wrap.is-active .pillar-card .stagger,
+  .pillar-sticky-wrap.entered .pillar-card .stagger,
+  .pillar-sticky-wrap .pillar-card.entered .stagger {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .pillar-sticky-wrap.is-active .pillar-card .stagger-heading,
+  .pillar-sticky-wrap.entered .pillar-card .stagger-heading,
+  .pillar-sticky-wrap .pillar-card.entered .stagger-heading {
+    opacity: 1;
+    clip-path: inset(0 -10% 0 0);
+  }
+}
+
+/* ─── Reduced motion ─── */
+
+@media (prefers-reduced-motion: reduce) {
+  .pillar-sticky-wrap {
+    transition: none !important;
+  }
+
+  .pillar-card .stagger,
+  .pillar-card .stagger-heading {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+  }
+
+  .pillar-card::before {
+    transition: none !important;
+    transform: scaleX(1) !important;
+  }
+}
